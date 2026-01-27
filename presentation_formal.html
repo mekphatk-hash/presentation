@@ -2356,15 +2356,12 @@
             document.getElementById('remoteUrl').textContent = remoteUrl;
 
             const qrContainer = document.getElementById('qrcode');
+            const qrImg = document.createElement('img');
+            qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(remoteUrl);
+            qrImg.alt = 'QR Code';
+            qrImg.style.borderRadius = '10px';
             qrContainer.innerHTML = '';
-
-            QRCode.toCanvas(document.createElement('canvas'), remoteUrl, {
-                width: 200,
-                margin: 2,
-                color: { dark: '#8B0000', light: '#FFFFFF' }
-            }, (err, canvas) => {
-                if (!err) qrContainer.appendChild(canvas);
-            });
+            qrContainer.appendChild(qrImg);
         }
 
         // Update connection status
