@@ -1,0 +1,2988 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Documentation - PDMS SAP B1 Integration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* ===== HEADER ===== */
+        .doc-header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+            color: white;
+            text-align: center;
+            padding: 50px 30px;
+        }
+        .doc-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+        .doc-header h2 {
+            font-size: 18px;
+            font-weight: 400;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        .doc-header p {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+        .doc-header .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            padding: 30px;
+            max-width: 100%;
+        }
+
+        /* ===== TOC ===== */
+        .toc {
+            background: white;
+            border-radius: 10px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .toc h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 15px;
+            padding-left: 12px;
+            border-left: 4px solid #2563eb;
+        }
+        .toc ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 8px 25px;
+        }
+        .toc li {
+            padding: 10px 15px;
+            font-size: 14px;
+            background: #f8fafc;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .toc li:hover {
+            background: #e0f2fe;
+            padding-left: 20px;
+        }
+
+        /* ===== SECTION ===== */
+        .section {
+            margin-bottom: 35px;
+        }
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #1e3a5f 0%, #3b82f6 100%);
+            color: white;
+            border-radius: 8px;
+        }
+
+        /* ===== DIAGRAM BOX ===== */
+        .diagram-box {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+        .diagram-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background: #f1f5f9;
+            border-left: 4px solid #2563eb;
+            border-radius: 0 6px 6px 0;
+        }
+
+        /* ===== SVG ===== */
+        .diagram-svg {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+        .entity-rect { fill: #fff; stroke: #1e3a5f; stroke-width: 2; }
+        .process-circle { fill: #dbeafe; stroke: #2563eb; stroke-width: 2; }
+        .arrow-line { stroke: #64748b; stroke-width: 1.5; fill: none; }
+        .label-text { font-family: 'Sarabun', sans-serif; font-size: 11px; fill: #1e293b; }
+        .label-small { font-family: 'Sarabun', sans-serif; font-size: 9px; fill: #64748b; }
+        .label-bold { font-family: 'Sarabun', sans-serif; font-size: 11px; font-weight: 600; fill: #1e3a5f; }
+
+        /* ===== LEGEND ===== */
+        .legend {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+        }
+
+        /* ===== ER DIAGRAM ===== */
+        .er-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        .er-entity {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+        .er-header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+            color: white;
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .er-header .tbl {
+            font-weight: 400;
+            font-size: 10px;
+            opacity: 0.8;
+            margin-left: 5px;
+        }
+        .er-attr {
+            display: flex;
+            padding: 8px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 12px;
+            align-items: center;
+        }
+        .er-attr:last-child { border-bottom: none; }
+        .er-key { width: 35px; }
+        .er-key span {
+            font-size: 9px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .pk { background: #fbbf24; color: #78350f; }
+        .fk { background: #38bdf8; color: #0c4a6e; }
+        .er-name { flex: 1; font-weight: 500; }
+        .er-type {
+            color: #64748b;
+            font-family: 'Fira Code', monospace;
+            font-size: 10px;
+            background: #f1f5f9;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        /* ===== TABLE ===== */
+        .rel-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .rel-table th, .rel-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+        .rel-table th {
+            background: #1e3a5f;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .rel-table td {
+            background: white;
+        }
+        .rel-table tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+        .rel-table tr:hover td {
+            background: #e0f2fe;
+        }
+
+        /* ===== STATUS ===== */
+        .status-pass {
+            background: #10b981;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        /* ===== STEP LIST ===== */
+        .step-list {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .step-list ol { padding-left: 25px; }
+        .step-list li { margin-bottom: 8px; font-size: 13px; }
+
+        /* ===== CODE ===== */
+        code {
+            font-family: 'Fira Code', monospace;
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        pre {
+            font-family: 'Fira Code', monospace;
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 11px;
+        }
+
+        /* ===== FOOTER ===== */
+        .doc-footer {
+            text-align: center;
+            padding: 35px 20px;
+            background: #1e3a5f;
+            color: white;
+            margin-top: 40px;
+        }
+        .doc-footer p {
+            opacity: 0.9;
+            font-size: 13px;
+        }
+
+        /* ===== SUMMARY CARDS ===== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .summary-card {
+            text-align: center;
+            padding: 25px 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .summary-card.green {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+        }
+        .summary-card.red {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+        }
+        .summary-card.blue {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+        .summary-card .number {
+            font-size: 40px;
+            font-weight: 700;
+        }
+        .summary-card.green .number { color: #2e7d32; }
+        .summary-card.red .number { color: #c62828; }
+        .summary-card.blue .number { color: #1565c0; }
+        .summary-card .label {
+            font-size: 14px;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+        .summary-card.green .label { color: #388e3c; }
+        .summary-card.red .label { color: #d32f2f; }
+        .summary-card.blue .label { color: #1976d2; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1200px) {
+            .summary-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .container { padding: 20px 15px; }
+            .doc-header { padding: 35px 20px; }
+            .doc-header h1 { font-size: 22px; }
+            .doc-header h2 { font-size: 15px; }
+            .toc ul { grid-template-columns: 1fr; }
+            .toc li { font-size: 13px; }
+            .section-title { font-size: 15px; padding: 12px 16px; }
+            .diagram-box { padding: 18px; }
+            .rel-table { font-size: 12px; }
+            .rel-table th, .rel-table td { padding: 10px 12px; }
+            .legend { gap: 15px; }
+            .summary-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .summary-card { padding: 20px 12px; }
+            .summary-card .number { font-size: 32px; }
+            .summary-card .label { font-size: 12px; }
+        }
+        @media (max-width: 480px) {
+            .summary-grid { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            body { background: white; }
+            .diagram-box { box-shadow: none; border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="doc-header">
+    <div class="doc-header-content">
+        <h1>SYSTEM DOCUMENTATION</h1>
+        <h2>PDMS - SAP Business One Integration System</h2>
+        <p>Data Flow Diagram | Entity Relationship Diagram | Flowchart | Sequence Diagram | API Specification</p>
+        <div class="badge">Version 1.0 | January 2025</div>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="toc">
+        <h3>Table of Contents</h3>
+        <ul>
+            <li>1. Data Flow Diagram - Context Level</li>
+            <li>2. Data Flow Diagram - Level 0</li>
+            <li>3. Entity Relationship Diagram</li>
+            <li>4. Flowchart - Import Process (PDMS → SAP B1)</li>
+            <li>5. Flowchart - Update Status Process (SAP B1 → PDMS)</li>
+            <li>6. Method Summary Table (27 Methods)</li>
+            <li>7. Project Size Analysis</li>
+            <li>8. Sequence Diagram</li>
+            <li>9. Data Dictionary</li>
+            <li>10. Outbound Process - API Specification (SAP → PDMS)</li>
+            <li>11. Test Cases & Results</li>
+            <li>12. Bibliography (บรรณานุกรม)</li>
+            <li>13. Appendix - Source Code Samples</li>
+        </ul>
+    </div>
+
+    <!-- Section 1: DFD Context -->
+    <div class="section">
+        <h3 class="section-title">1. Data Flow Diagram - Context Level</h3>
+        <div class="diagram-box">
+            <div class="diagram-title">Context Diagram: PDMS-SAP Integration System</div>
+            <svg class="diagram-svg" width="750" height="320" viewBox="0 0 750 320">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#000"/>
+                    </marker>
+                </defs>
+
+                <!-- PDMS Entity -->
+                <rect x="30" y="100" width="120" height="70" class="entity-rect"/>
+                <text x="90" y="125" text-anchor="middle" class="label-small">External Entity</text>
+                <text x="90" y="145" text-anchor="middle" class="label-bold">PDMS API</text>
+
+                <!-- Process Circle -->
+                <circle cx="375" cy="135" r="60" class="process-circle"/>
+                <text x="375" y="125" text-anchor="middle" class="label-small">0</text>
+                <text x="375" y="140" text-anchor="middle" class="label-bold">Integration</text>
+                <text x="375" y="155" text-anchor="middle" class="label-bold">Service</text>
+                <text x="375" y="170" text-anchor="middle" class="label-small">(C# .NET)</text>
+
+                <!-- SAP Entity -->
+                <rect x="600" y="100" width="120" height="70" class="entity-rect"/>
+                <text x="660" y="125" text-anchor="middle" class="label-small">External Entity</text>
+                <text x="660" y="145" text-anchor="middle" class="label-bold">SAP B1</text>
+                <text x="660" y="160" text-anchor="middle" class="label-small">Service Layer</text>
+
+                <!-- DataStore -->
+                <line x1="300" y1="270" x2="450" y2="270" stroke="#000" stroke-width="2"/>
+                <line x1="300" y1="295" x2="450" y2="295" stroke="#000" stroke-width="2"/>
+                <text x="375" y="287" text-anchor="middle" class="label-bold">D1: @SLD_PDMS_LOG</text>
+
+                <!-- Arrow: PDMS -> Process (Top) -->
+                <line x1="150" y1="115" x2="310" y2="115" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="230" y="108" text-anchor="middle" class="label-small">Project Data (JSON)</text>
+
+                <!-- Arrow: Process -> PDMS (Bottom) -->
+                <line x1="310" y1="155" x2="150" y2="155" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="230" y="172" text-anchor="middle" class="label-small">Status Update / Disbursement</text>
+
+                <!-- Arrow: Process -> SAP (Top) -->
+                <line x1="440" y1="115" x2="600" y2="115" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="520" y="108" text-anchor="middle" class="label-small">BP / Project / Invoice</text>
+
+                <!-- Arrow: SAP -> Process (Bottom) -->
+                <line x1="600" y1="155" x2="440" y2="155" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="520" y="172" text-anchor="middle" class="label-small">Payment Data</text>
+
+                <!-- Arrow: Process -> DataStore -->
+                <line x1="375" y1="195" x2="375" y2="265" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="390" y="235" class="label-small">Log</text>
+            </svg>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><svg width="30" height="20"><rect x="2" y="2" width="26" height="16" fill="#fff" stroke="#000" stroke-width="1.5"/></svg> External Entity</div>
+            <div class="legend-item"><svg width="25" height="25"><circle cx="12" cy="12" r="10" fill="#fff" stroke="#000" stroke-width="1.5"/></svg> Process</div>
+            <div class="legend-item"><svg width="40" height="20"><line x1="5" y1="5" x2="35" y2="5" stroke="#000" stroke-width="1.5"/><line x1="5" y1="15" x2="35" y2="15" stroke="#000" stroke-width="1.5"/></svg> Data Store</div>
+            <div class="legend-item"><svg width="40" height="15"><line x1="5" y1="7" x2="35" y2="7" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/></svg> Data Flow</div>
+        </div>
+    </div>
+
+    <!-- Section 2: DFD Level 0 -->
+    <div class="section">
+        <h3 class="section-title">2. Data Flow Diagram - Level 0</h3>
+
+        <!-- Flow 1 -->
+        <div class="diagram-box">
+            <div class="diagram-title">Process 1: Import Data (PDMS → SAP B1)</div>
+            <svg class="diagram-svg" width="700" height="180" viewBox="0 0 700 180">
+                <!-- PDMS -->
+                <rect x="20" y="50" width="100" height="50" class="entity-rect"/>
+                <text x="70" y="80" text-anchor="middle" class="label-bold">PDMS API</text>
+
+                <!-- Process 1.1 -->
+                <circle cx="220" cy="75" r="40" class="process-circle"/>
+                <text x="220" y="70" text-anchor="middle" class="label-small">1.1</text>
+                <text x="220" y="85" text-anchor="middle" class="label-small">Fetch Data</text>
+
+                <!-- Process 1.2 -->
+                <circle cx="400" cy="75" r="40" class="process-circle"/>
+                <text x="400" y="70" text-anchor="middle" class="label-small">1.2</text>
+                <text x="400" y="85" text-anchor="middle" class="label-small">Create Docs</text>
+
+                <!-- SAP -->
+                <rect x="560" y="50" width="100" height="50" class="entity-rect"/>
+                <text x="610" y="80" text-anchor="middle" class="label-bold">SAP B1</text>
+
+                <!-- DataStore -->
+                <line x1="340" y1="150" x2="460" y2="150" stroke="#000" stroke-width="2"/>
+                <line x1="340" y1="170" x2="460" y2="170" stroke="#000" stroke-width="2"/>
+                <text x="400" y="164" text-anchor="middle" class="label-small">D1: Log</text>
+
+                <!-- Arrows -->
+                <line x1="120" y1="75" x2="175" y2="75" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="147" y="68" text-anchor="middle" class="label-small">GET</text>
+
+                <line x1="265" y1="75" x2="355" y2="75" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="310" y="68" text-anchor="middle" class="label-small">JSON</text>
+
+                <line x1="445" y1="75" x2="555" y2="75" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="500" y="68" text-anchor="middle" class="label-small">POST</text>
+
+                <line x1="400" y1="115" x2="400" y2="145" class="arrow-line" marker-end="url(#arrow)"/>
+            </svg>
+        </div>
+
+        <!-- Flow 2 -->
+        <div class="diagram-box">
+            <div class="diagram-title">Process 2: Update Status (SAP B1 → PDMS)</div>
+            <svg class="diagram-svg" width="700" height="180" viewBox="0 0 700 180">
+                <!-- SAP -->
+                <rect x="20" y="50" width="100" height="50" class="entity-rect"/>
+                <text x="70" y="80" text-anchor="middle" class="label-bold">SAP B1</text>
+
+                <!-- Process 2.1 -->
+                <circle cx="220" cy="75" r="40" class="process-circle"/>
+                <text x="220" y="70" text-anchor="middle" class="label-small">2.1</text>
+                <text x="220" y="85" text-anchor="middle" class="label-small">Get Payment</text>
+
+                <!-- Process 2.2 -->
+                <circle cx="400" cy="75" r="40" class="process-circle"/>
+                <text x="400" y="70" text-anchor="middle" class="label-small">2.2</text>
+                <text x="400" y="85" text-anchor="middle" class="label-small">Send Update</text>
+
+                <!-- PDMS -->
+                <rect x="560" y="50" width="100" height="50" class="entity-rect"/>
+                <text x="610" y="80" text-anchor="middle" class="label-bold">PDMS API</text>
+
+                <!-- DataStore -->
+                <line x1="340" y1="150" x2="460" y2="150" stroke="#000" stroke-width="2"/>
+                <line x1="340" y1="170" x2="460" y2="170" stroke="#000" stroke-width="2"/>
+                <text x="400" y="164" text-anchor="middle" class="label-small">D1: Log</text>
+
+                <!-- Arrows -->
+                <line x1="120" y1="75" x2="175" y2="75" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="147" y="68" text-anchor="middle" class="label-small">GET</text>
+
+                <line x1="265" y1="75" x2="355" y2="75" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="310" y="68" text-anchor="middle" class="label-small">Data</text>
+
+                <line x1="445" y1="75" x2="555" y2="75" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="500" y="68" text-anchor="middle" class="label-small">PATCH/POST</text>
+
+                <line x1="400" y1="115" x2="400" y2="145" class="arrow-line" marker-end="url(#arrow)"/>
+            </svg>
+        </div>
+
+        <div class="step-list">
+            <p><strong>Process 1 Steps:</strong></p>
+            <ol>
+                <li>ดึงข้อมูลโครงการจาก PDMS (GET /projects)</li>
+                <li>ตรวจสอบ/สร้าง Business Partner, Project, Invoice</li>
+                <li>บันทึก Log</li>
+            </ol>
+            <p style="margin-top:10px;"><strong>Process 2 Steps:</strong></p>
+            <ol>
+                <li>ดึงข้อมูล Payment จาก SAP</li>
+                <li>PATCH สถานะ + POST Disbursement ไป PDMS</li>
+                <li>บันทึก Log</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Section 3: ERD -->
+    <div class="section">
+        <h3 class="section-title">3. Entity Relationship Diagram</h3>
+
+        <div class="er-container">
+            <div class="er-entity">
+                <div class="er-header">BUSINESS_PARTNER <span class="tbl">(OCRD)</span></div>
+                <div class="er-attr"><div class="er-key"><span class="pk">PK</span></div><div class="er-name">CardCode</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">CardName</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">CardType</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">Phone1</div><div class="er-type">VARCHAR</div></div>
+            </div>
+
+            <div class="er-entity">
+                <div class="er-header">PROJECT <span class="tbl">(OPRJ)</span></div>
+                <div class="er-attr"><div class="er-key"><span class="pk">PK</span></div><div class="er-name">Code</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">Name</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"><span class="fk">FK</span></div><div class="er-name">CardCode</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">ValidFrom</div><div class="er-type">DATE</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">ValidTo</div><div class="er-type">DATE</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">U_SLD_Period</div><div class="er-type">VARCHAR</div></div>
+            </div>
+
+            <div class="er-entity">
+                <div class="er-header">AP_INVOICE <span class="tbl">(OPCH)</span></div>
+                <div class="er-attr"><div class="er-key"><span class="pk">PK</span></div><div class="er-name">DocEntry</div><div class="er-type">INT</div></div>
+                <div class="er-attr"><div class="er-key"><span class="fk">FK</span></div><div class="er-name">CardCode</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"><span class="fk">FK</span></div><div class="er-name">Project</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">DocDate</div><div class="er-type">DATE</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">DocTotal</div><div class="er-type">DECIMAL</div></div>
+            </div>
+
+            <div class="er-entity">
+                <div class="er-header">INVOICE_LINE <span class="tbl">(PCH1)</span></div>
+                <div class="er-attr"><div class="er-key"><span class="pk">PK</span></div><div class="er-name">DocEntry</div><div class="er-type">INT</div></div>
+                <div class="er-attr"><div class="er-key"><span class="pk">PK</span></div><div class="er-name">LineNum</div><div class="er-type">INT</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">AccountCode</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">LineTotal</div><div class="er-type">DECIMAL</div></div>
+            </div>
+
+            <div class="er-entity">
+                <div class="er-header">PAYMENT <span class="tbl">(OVPM)</span></div>
+                <div class="er-attr"><div class="er-key"><span class="pk">PK</span></div><div class="er-name">DocEntry</div><div class="er-type">INT</div></div>
+                <div class="er-attr"><div class="er-key"><span class="fk">FK</span></div><div class="er-name">CardCode</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">DocDate</div><div class="er-type">DATE</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">DocTotal</div><div class="er-type">DECIMAL</div></div>
+            </div>
+
+            <div class="er-entity">
+                <div class="er-header">PDMS_LOG <span class="tbl">(@SLD_PDMS_LOG)</span></div>
+                <div class="er-attr"><div class="er-key"><span class="pk">PK</span></div><div class="er-name">Code</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">U_Action</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">U_Status</div><div class="er-type">VARCHAR</div></div>
+                <div class="er-attr"><div class="er-key"></div><div class="er-name">U_Amount</div><div class="er-type">DECIMAL</div></div>
+            </div>
+        </div>
+
+        <!-- 3.1 Entity Description -->
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">3.1 คำอธิบาย Entity (ตารางข้อมูล)</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:20%;">Entity</th>
+                    <th style="width:15%;">ตาราง SAP</th>
+                    <th style="width:65%;">คำอธิบาย / ข้อมูลที่เก็บ</th>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">BUSINESS_PARTNER</td>
+                    <td>OCRD</td>
+                    <td>
+                        <strong>คู่ค้า / ผู้ขาย (Vendor)</strong><br>
+                        เก็บข้อมูลบริษัทหรือบุคคลที่เราทำธุรกิจด้วย เช่น:<br>
+                        • รหัสคู่ค้า (CardCode) - รหัสเฉพาะของแต่ละราย<br>
+                        • ชื่อบริษัท/บุคคล (CardName)<br>
+                        • ประเภท (CardType) - ลูกค้า/ผู้ขาย<br>
+                        • เบอร์โทรศัพท์ (Phone1)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">PROJECT</td>
+                    <td>OPRJ</td>
+                    <td>
+                        <strong>โครงการ (Project Management)</strong><br>
+                        เก็บข้อมูลโครงการที่นำเข้าจาก PDMS เช่น:<br>
+                        • รหัสโครงการ (Code) - รหัสจาก PDMS<br>
+                        • ชื่อโครงการ (Name)<br>
+                        • เจ้าของโครงการ (CardCode) - อ้างอิง BP<br>
+                        • วันเริ่ม/สิ้นสุด (ValidFrom/ValidTo)<br>
+                        • งวดงาน (U_SLD_Period)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">AP_INVOICE</td>
+                    <td>OPCH</td>
+                    <td>
+                        <strong>ใบแจ้งหนี้ซื้อ (AP Invoice / Purchase Invoice)</strong><br>
+                        เก็บข้อมูลใบแจ้งหนี้ที่ต้องจ่ายให้ผู้ขาย เช่น:<br>
+                        • เลขที่เอกสาร (DocEntry) - รหัสอัตโนมัติ<br>
+                        • ผู้ขาย (CardCode) - ใครส่งใบแจ้งหนี้<br>
+                        • โครงการ (Project) - เป็นค่าใช้จ่ายของโครงการไหน<br>
+                        • วันที่เอกสาร (DocDate)<br>
+                        • ยอดรวม (DocTotal)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">INVOICE_LINE</td>
+                    <td>PCH1</td>
+                    <td>
+                        <strong>รายการในใบแจ้งหนี้ (Invoice Line Items)</strong><br>
+                        เก็บรายละเอียดแต่ละบรรทัดในใบแจ้งหนี้ เช่น:<br>
+                        • เลขที่เอกสาร (DocEntry) - อ้างอิง Invoice<br>
+                        • ลำดับบรรทัด (LineNum)<br>
+                        • รหัสบัญชี (AccountCode) - ลงบัญชีอะไร<br>
+                        • ยอดเงินบรรทัดนั้น (LineTotal)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">PAYMENT</td>
+                    <td>OVPM</td>
+                    <td>
+                        <strong>การจ่ายเงิน (Outgoing Payment)</strong><br>
+                        เก็บข้อมูลการจ่ายเงินให้ผู้ขาย เช่น:<br>
+                        • เลขที่เอกสาร (DocEntry)<br>
+                        • จ่ายให้ใคร (CardCode)<br>
+                        • วันที่จ่าย (DocDate)<br>
+                        • ยอดจ่าย (DocTotal)<br>
+                        <em>* เมื่อจ่ายแล้ว จะส่งสถานะกลับไป PDMS</em>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">PDMS_LOG</td>
+                    <td>@SLD_PDMS_LOG</td>
+                    <td>
+                        <strong>บันทึกการ Sync (Integration Log)</strong><br>
+                        เก็บประวัติการ Sync ข้อมูลระหว่าง PDMS-SAP เช่น:<br>
+                        • รหัส Log (Code)<br>
+                        • การกระทำ (U_Action) - Import/Update<br>
+                        • สถานะ (U_Status) - Success/Error<br>
+                        • ยอดเงิน (U_Amount)<br>
+                        <em>* ใช้ตรวจสอบและ Debug ปัญหา</em>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 3.2 Relationship Table -->
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">3.2 ความสัมพันธ์ระหว่าง Entity (Relationships)</div>
+            <table class="rel-table">
+                <tr>
+                    <th>Parent</th>
+                    <th>Cardinality</th>
+                    <th>Child</th>
+                    <th>FK</th>
+                    <th>คำอธิบายเป็นภาษาคน</th>
+                </tr>
+                <tr>
+                    <td>BUSINESS_PARTNER</td>
+                    <td style="text-align:center;font-weight:bold;color:#2196F3;">1 : N</td>
+                    <td>PROJECT</td>
+                    <td>CardCode</td>
+                    <td>คู่ค้า <strong>1 ราย</strong> สามารถมี <strong>หลายโครงการ</strong> ได้<br><em>ตัวอย่าง: บริษัท ABC มี 5 โครงการ</em></td>
+                </tr>
+                <tr>
+                    <td>BUSINESS_PARTNER</td>
+                    <td style="text-align:center;font-weight:bold;color:#2196F3;">1 : N</td>
+                    <td>AP_INVOICE</td>
+                    <td>CardCode</td>
+                    <td>คู่ค้า <strong>1 ราย</strong> สามารถส่ง <strong>หลายใบแจ้งหนี้</strong> มาได้<br><em>ตัวอย่าง: บริษัท ABC ส่งใบแจ้งหนี้มา 10 ใบ</em></td>
+                </tr>
+                <tr>
+                    <td>PROJECT</td>
+                    <td style="text-align:center;font-weight:bold;color:#2196F3;">1 : N</td>
+                    <td>AP_INVOICE</td>
+                    <td>Project</td>
+                    <td>โครงการ <strong>1 โครงการ</strong> สามารถมี <strong>หลายใบแจ้งหนี้</strong> (ค่าใช้จ่าย)<br><em>ตัวอย่าง: โครงการสร้างอาคาร มีค่าวัสดุ ค่าแรง ค่าเครื่องจักร แยก 3 ใบ</em></td>
+                </tr>
+                <tr>
+                    <td>AP_INVOICE</td>
+                    <td style="text-align:center;font-weight:bold;color:#2196F3;">1 : N</td>
+                    <td>INVOICE_LINE</td>
+                    <td>DocEntry</td>
+                    <td>ใบแจ้งหนี้ <strong>1 ใบ</strong> มี <strong>หลายรายการ</strong> (บรรทัด)<br><em>ตัวอย่าง: ใบแจ้งหนี้ค่าวัสดุ มี 5 รายการ (ปูน, เหล็ก, ทราย, อิฐ, สี)</em></td>
+                </tr>
+                <tr>
+                    <td>AP_INVOICE</td>
+                    <td style="text-align:center;font-weight:bold;color:#2196F3;">1 : N</td>
+                    <td>PAYMENT</td>
+                    <td>DocEntry</td>
+                    <td>ใบแจ้งหนี้ <strong>1 ใบ</strong> สามารถ <strong>จ่ายหลายครั้ง</strong> ได้ (แบ่งจ่าย)<br><em>ตัวอย่าง: ใบแจ้งหนี้ 100,000 บาท จ่ายงวดแรก 50,000 งวดสอง 50,000</em></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- 3.3 Cardinality Legend -->
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">3.3 ประเภท Cardinality (ความสัมพันธ์)</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:15%;">สัญลักษณ์</th>
+                    <th style="width:20%;">ชื่อ</th>
+                    <th style="width:30%;">ความหมาย</th>
+                    <th style="width:35%;">ตัวอย่าง</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;font-weight:bold;font-size:14px;">1 : 1</td>
+                    <td>One-to-One</td>
+                    <td>1 ต่อ 1<br>แต่ละ record มีคู่เดียว</td>
+                    <td>คน 1 คน มี บัตรประชาชน 1 ใบ<br><em>(ไม่ใช้ในระบบนี้)</em></td>
+                </tr>
+                <tr style="background:#e8f5e9;">
+                    <td style="text-align:center;font-weight:bold;font-size:14px;color:#2196F3;">1 : N</td>
+                    <td>One-to-Many</td>
+                    <td>1 ต่อ หลาย<br>1 record มีหลาย record ลูก</td>
+                    <td>BP 1 ราย → หลาย Project<br><strong>✓ ใช้ในระบบนี้ทั้งหมด</strong></td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;font-weight:bold;font-size:14px;">M : N</td>
+                    <td>Many-to-Many</td>
+                    <td>หลาย ต่อ หลาย<br>ต้องมีตารางกลาง</td>
+                    <td>นักเรียน ↔ วิชาเรียน<br><em>(ไม่ใช้ในระบบนี้)</em></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="legend" style="margin-top:15px;">
+            <div class="legend-item"><span class="pk" style="padding:2px 5px;font-size:8px;border:1px solid #000;">PK</span> Primary Key (รหัสหลัก)</div>
+            <div class="legend-item"><span class="fk" style="padding:2px 5px;font-size:8px;border:1px solid #000;">FK</span> Foreign Key (รหัสอ้างอิง)</div>
+            <div class="legend-item">1 : N = One to Many (หนึ่งต่อหลาย)</div>
+        </div>
+    </div>
+
+    <!-- Section 4: Flowchart Import -->
+    <div class="section">
+        <h3 class="section-title">4. Flowchart - Import Process (PDMS → SAP B1)</h3>
+        <div class="diagram-box">
+            <svg class="diagram-svg" width="550" height="980" viewBox="0 0 550 980">
+                <!-- Start -->
+                <ellipse cx="275" cy="25" rx="40" ry="18" class="entity-rect"/>
+                <text x="275" y="30" text-anchor="middle" class="label-bold">START</text>
+
+                <line x1="275" y1="43" x2="275" y2="60" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Method: GetProjectsFromPDMS() -->
+                <rect x="160" y="65" width="230" height="40" class="entity-rect"/>
+                <text x="275" y="82" text-anchor="middle" class="label-bold" style="font-size:10px;">GetProjectsFromPDMS()</text>
+                <text x="275" y="96" text-anchor="middle" class="label-small" style="fill:#4CAF50;">GET /projects</text>
+
+                <line x1="275" y1="105" x2="275" y2="125" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Loop -->
+                <rect x="160" y="130" width="230" height="30" class="entity-rect"/>
+                <text x="275" y="150" text-anchor="middle" class="label-small">foreach (var project in projects)</text>
+
+                <line x1="275" y1="160" x2="275" y2="180" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Decision 1: CheckBPExists() -->
+                <polygon points="275,185 350,220 275,255 200,220" class="entity-rect"/>
+                <text x="275" y="215" text-anchor="middle" class="label-bold" style="font-size:9px;">CheckBPExists()</text>
+                <text x="275" y="228" text-anchor="middle" class="label-small">มี BP?</text>
+
+                <!-- No branch - CreateBusinessPartner() POST -->
+                <line x1="200" y1="220" x2="90" y2="220" class="arrow-line"/>
+                <line x1="90" y1="220" x2="90" y2="270" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="145" y="213" class="label-small">NO</text>
+                <rect x="15" y="275" width="150" height="45" class="entity-rect"/>
+                <text x="90" y="292" text-anchor="middle" class="label-bold" style="font-size:10px;">CreateBusinessPartner()</text>
+                <text x="90" y="310" text-anchor="middle" class="label-small" style="fill:#2196F3;">POST /BusinessPartners</text>
+                <line x1="90" y1="320" x2="90" y2="345" class="arrow-line"/>
+                <line x1="90" y1="345" x2="275" y2="345" class="arrow-line"/>
+
+                <!-- Yes branch - UpdateBusinessPartner() PATCH -->
+                <line x1="350" y1="220" x2="460" y2="220" class="arrow-line"/>
+                <line x1="460" y1="220" x2="460" y2="270" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="395" y="213" class="label-small">YES</text>
+                <rect x="385" y="275" width="150" height="45" class="entity-rect"/>
+                <text x="460" y="292" text-anchor="middle" class="label-bold" style="font-size:10px;">UpdateBusinessPartner()</text>
+                <text x="460" y="310" text-anchor="middle" class="label-small" style="fill:#9C27B0;">PATCH /BusinessPartners</text>
+                <line x1="460" y1="320" x2="460" y2="345" class="arrow-line"/>
+                <line x1="460" y1="345" x2="275" y2="345" class="arrow-line"/>
+
+                <line x1="275" y1="345" x2="275" y2="370" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Decision 2: CheckProjectExists() -->
+                <polygon points="275,375 350,410 275,445 200,410" class="entity-rect"/>
+                <text x="275" y="405" text-anchor="middle" class="label-bold" style="font-size:9px;">CheckProjectExists()</text>
+                <text x="275" y="418" text-anchor="middle" class="label-small">มี Project?</text>
+
+                <!-- No branch - CreateProject() POST -->
+                <line x1="200" y1="410" x2="90" y2="410" class="arrow-line"/>
+                <line x1="90" y1="410" x2="90" y2="460" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="145" y="403" class="label-small">NO</text>
+                <rect x="15" y="465" width="150" height="45" class="entity-rect"/>
+                <text x="90" y="482" text-anchor="middle" class="label-bold" style="font-size:10px;">CreateProject()</text>
+                <text x="90" y="500" text-anchor="middle" class="label-small" style="fill:#2196F3;">POST /ProjectManagements</text>
+                <line x1="90" y1="510" x2="90" y2="535" class="arrow-line"/>
+                <line x1="90" y1="535" x2="275" y2="535" class="arrow-line"/>
+
+                <!-- Yes branch - UpdateProject() PATCH -->
+                <line x1="350" y1="410" x2="460" y2="410" class="arrow-line"/>
+                <line x1="460" y1="410" x2="460" y2="460" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="395" y="403" class="label-small">YES</text>
+                <rect x="385" y="465" width="150" height="45" class="entity-rect"/>
+                <text x="460" y="482" text-anchor="middle" class="label-bold" style="font-size:10px;">UpdateProject()</text>
+                <text x="460" y="500" text-anchor="middle" class="label-small" style="fill:#9C27B0;">PATCH /ProjectManagements</text>
+                <line x1="460" y1="510" x2="460" y2="535" class="arrow-line"/>
+                <line x1="460" y1="535" x2="275" y2="535" class="arrow-line"/>
+
+                <line x1="275" y1="535" x2="275" y2="560" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Method: CreateAPInvoice() -->
+                <rect x="160" y="565" width="230" height="45" class="entity-rect"/>
+                <text x="275" y="582" text-anchor="middle" class="label-bold" style="font-size:10px;">CreateAPInvoice()</text>
+                <text x="275" y="600" text-anchor="middle" class="label-small" style="fill:#2196F3;">POST /PurchaseInvoices</text>
+
+                <line x1="275" y1="610" x2="275" y2="630" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Method: CreateInvoiceLines() -->
+                <rect x="160" y="635" width="230" height="45" class="entity-rect"/>
+                <text x="275" y="652" text-anchor="middle" class="label-bold" style="font-size:10px;">CreateInvoiceLines()</text>
+                <text x="275" y="670" text-anchor="middle" class="label-small">Add DocumentLines</text>
+
+                <line x1="275" y1="680" x2="275" y2="700" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Method: WriteLog() -->
+                <rect x="160" y="705" width="230" height="45" class="entity-rect"/>
+                <text x="275" y="722" text-anchor="middle" class="label-bold" style="font-size:10px;">WriteLog()</text>
+                <text x="275" y="740" text-anchor="middle" class="label-small" style="fill:#2196F3;">POST /@SLD_PDMS_LOG</text>
+
+                <line x1="275" y1="750" x2="275" y2="770" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Output: UpdatePDMSStatus() -->
+                <polygon points="160,775 390,775 370,815 180,815" class="entity-rect"/>
+                <text x="275" y="792" text-anchor="middle" class="label-bold" style="font-size:10px;">UpdatePDMSStatus()</text>
+                <text x="275" y="808" text-anchor="middle" class="label-small" style="fill:#9C27B0;">PATCH /projects/{id}</text>
+
+                <line x1="275" y1="815" x2="275" y2="835" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- End -->
+                <ellipse cx="275" cy="850" rx="40" ry="18" class="entity-rect"/>
+                <text x="275" y="855" text-anchor="middle" class="label-bold">END</text>
+
+                <!-- Legend -->
+                <rect x="20" y="890" width="510" height="80" fill="#f9f9f9" stroke="#000" stroke-width="1"/>
+                <text x="275" y="910" text-anchor="middle" class="label-bold">HTTP Methods ใน Flowchart นี้</text>
+                <text x="60" y="935" class="label-small" style="fill:#4CAF50;font-weight:bold;">● GET</text>
+                <text x="110" y="935" class="label-small">- ดึงข้อมูล</text>
+                <text x="200" y="935" class="label-small" style="fill:#2196F3;font-weight:bold;">● POST</text>
+                <text x="255" y="935" class="label-small">- สร้างใหม่</text>
+                <text x="350" y="935" class="label-small" style="fill:#9C27B0;font-weight:bold;">● PATCH</text>
+                <text x="415" y="935" class="label-small">- อัปเดต</text>
+                <text x="60" y="958" class="label-small">สรุป: GET=1, POST=4, PATCH=3</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Section 5: Flowchart Update -->
+    <div class="section">
+        <h3 class="section-title">5. Flowchart - Update Status Process (SAP B1 → PDMS)</h3>
+        <div class="diagram-box">
+            <svg class="diagram-svg" width="550" height="750" viewBox="0 0 550 750">
+                <!-- Start -->
+                <ellipse cx="275" cy="25" rx="40" ry="18" class="entity-rect"/>
+                <text x="275" y="30" text-anchor="middle" class="label-bold">START</text>
+
+                <line x1="275" y1="43" x2="275" y2="60" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Method: GetOutgoingPayments() -->
+                <rect x="160" y="65" width="230" height="40" class="entity-rect"/>
+                <text x="275" y="82" text-anchor="middle" class="label-bold" style="font-size:10px;">GetOutgoingPayments()</text>
+                <text x="275" y="96" text-anchor="middle" class="label-small">SAP: GET /OutgoingPayments</text>
+
+                <line x1="275" y1="105" x2="275" y2="125" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Method: FilterUnsyncedPayments() -->
+                <rect x="160" y="130" width="230" height="40" class="entity-rect"/>
+                <text x="275" y="147" text-anchor="middle" class="label-bold" style="font-size:10px;">FilterUnsyncedPayments()</text>
+                <text x="275" y="161" text-anchor="middle" class="label-small">WHERE U_SLD_Sync = 'N'</text>
+
+                <line x1="275" y1="170" x2="275" y2="190" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Loop -->
+                <rect x="160" y="195" width="230" height="30" class="entity-rect"/>
+                <text x="275" y="215" text-anchor="middle" class="label-small">foreach (var payment in payments)</text>
+
+                <line x1="275" y1="225" x2="275" y2="250" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Method: GetProjectByPayment() -->
+                <rect x="160" y="255" width="230" height="40" class="entity-rect"/>
+                <text x="275" y="272" text-anchor="middle" class="label-bold" style="font-size:10px;">GetProjectByPayment()</text>
+                <text x="275" y="286" text-anchor="middle" class="label-small">Lookup Project from Invoice</text>
+
+                <line x1="275" y1="295" x2="275" y2="315" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Method: UpdateProjectStatus() -->
+                <rect x="160" y="320" width="230" height="40" class="entity-rect"/>
+                <text x="275" y="337" text-anchor="middle" class="label-bold" style="font-size:10px;">UpdateProjectStatus()</text>
+                <text x="275" y="351" text-anchor="middle" class="label-small">PDMS: PATCH /projects/{id}</text>
+
+                <line x1="275" y1="360" x2="275" y2="385" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Decision: ValidateResponse() -->
+                <polygon points="275,390 350,430 275,470 200,430" class="entity-rect"/>
+                <text x="275" y="420" text-anchor="middle" class="label-bold" style="font-size:9px;">ValidateResponse()</text>
+                <text x="275" y="435" text-anchor="middle" class="label-small">Success?</text>
+
+                <!-- No branch - LogError() -->
+                <line x1="200" y1="430" x2="90" y2="430" class="arrow-line"/>
+                <line x1="90" y1="430" x2="90" y2="490" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="145" y="423" class="label-small">NO</text>
+                <rect x="15" y="495" width="150" height="45" class="entity-rect"/>
+                <text x="90" y="512" text-anchor="middle" class="label-bold" style="font-size:10px;">LogError()</text>
+                <text x="90" y="530" text-anchor="middle" class="label-small">Write error to Log</text>
+                <line x1="90" y1="540" x2="90" y2="575" class="arrow-line"/>
+                <line x1="90" y1="575" x2="275" y2="575" class="arrow-line"/>
+
+                <!-- Yes branch - CreateDisbursement() -->
+                <line x1="350" y1="430" x2="460" y2="430" class="arrow-line"/>
+                <line x1="460" y1="430" x2="460" y2="490" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="395" y="423" class="label-small">YES</text>
+                <rect x="385" y="495" width="150" height="45" class="entity-rect"/>
+                <text x="460" y="512" text-anchor="middle" class="label-bold" style="font-size:10px;">CreateDisbursement()</text>
+                <text x="460" y="530" text-anchor="middle" class="label-small">PDMS: POST /disbursements</text>
+                <line x1="460" y1="540" x2="460" y2="575" class="arrow-line"/>
+                <line x1="460" y1="575" x2="275" y2="575" class="arrow-line"/>
+
+                <line x1="275" y1="575" x2="275" y2="595" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Method: UpdateSyncFlag() -->
+                <rect x="160" y="600" width="230" height="45" class="entity-rect"/>
+                <text x="275" y="617" text-anchor="middle" class="label-bold" style="font-size:10px;">UpdateSyncFlag()</text>
+                <text x="275" y="635" text-anchor="middle" class="label-small">SAP: PATCH U_SLD_Sync = 'Y'</text>
+
+                <line x1="275" y1="645" x2="275" y2="665" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- Method: WriteLog() -->
+                <rect x="160" y="670" width="230" height="45" class="entity-rect"/>
+                <text x="275" y="687" text-anchor="middle" class="label-bold" style="font-size:10px;">WriteLog()</text>
+                <text x="275" y="705" text-anchor="middle" class="label-small">SAP: POST /@SLD_PDMS_LOG</text>
+
+                <line x1="275" y1="715" x2="275" y2="730" class="arrow-line" marker-end="url(#arrow)"/>
+
+                <!-- End -->
+                <ellipse cx="275" cy="745" rx="40" ry="18" class="entity-rect"/>
+                <text x="275" y="750" text-anchor="middle" class="label-bold">END</text>
+            </svg>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><svg width="30" height="18"><ellipse cx="15" cy="9" rx="13" ry="7" fill="#fff" stroke="#000" stroke-width="1.5"/></svg> Terminal</div>
+            <div class="legend-item"><svg width="30" height="18"><rect x="2" y="2" width="26" height="14" fill="#fff" stroke="#000" stroke-width="1.5"/></svg> Process/Method</div>
+            <div class="legend-item"><svg width="35" height="18"><polygon points="5,2 30,2 25,16 10,16" fill="#fff" stroke="#000" stroke-width="1.5"/></svg> I/O</div>
+            <div class="legend-item"><svg width="25" height="25"><polygon points="12,2 22,12 12,22 2,12" fill="#fff" stroke="#000" stroke-width="1.5"/></svg> Decision</div>
+        </div>
+    </div>
+
+    <!-- Section 6: Method Summary -->
+    <div class="section">
+        <h3 class="section-title">6. Method Summary Table</h3>
+
+        <!-- HTTP Methods Legend -->
+        <div style="margin-bottom:15px;padding:10px;border:1px solid #000;font-size:10px;">
+            <strong>HTTP Methods:</strong>
+            <span style="color:#4CAF50;margin-left:15px;">● GET</span> - ดึงข้อมูล (Read)
+            <span style="color:#2196F3;margin-left:15px;">● POST</span> - สร้างข้อมูลใหม่ (Create)
+            <span style="color:#FF9800;margin-left:15px;">● PUT</span> - แก้ไขทั้งหมด (Replace)
+            <span style="color:#9C27B0;margin-left:15px;">● PATCH</span> - แก้ไขบางส่วน (Update)
+        </div>
+
+        <table class="rel-table">
+            <tr>
+                <th>#</th>
+                <th>Method Name</th>
+                <th>API Endpoint</th>
+                <th>HTTP</th>
+                <th>Description</th>
+            </tr>
+            <!-- Authentication -->
+            <tr><td colspan="5" style="background:#333;color:#fff;font-weight:bold;">Authentication & Session</td></tr>
+            <tr><td>1</td><td>LoginSAP()</td><td>SAP: /Login</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>เข้าสู่ระบบ SAP Service Layer</td></tr>
+            <tr><td>2</td><td>LogoutSAP()</td><td>SAP: /Logout</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>ออกจากระบบ SAP</td></tr>
+            <tr><td>3</td><td>LoginPDMS()</td><td>PDMS: /auth/login</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>เข้าสู่ระบบ PDMS (Get Token)</td></tr>
+            <tr><td>4</td><td>RefreshToken()</td><td>PDMS: /auth/refresh</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>ต่ออายุ Token</td></tr>
+            <!-- Import Process -->
+            <tr><td colspan="5" style="background:#f0f0f0;font-weight:bold;">Import Process (PDMS → SAP)</td></tr>
+            <tr><td>5</td><td>GetProjectsFromPDMS()</td><td>PDMS: /projects</td><td style="color:#4CAF50;font-weight:bold;">GET</td><td>ดึงรายการโครงการจาก PDMS</td></tr>
+            <tr><td>6</td><td>GetProjectDetail()</td><td>PDMS: /projects/{id}</td><td style="color:#4CAF50;font-weight:bold;">GET</td><td>ดึงรายละเอียดโครงการ</td></tr>
+            <tr><td>7</td><td>CheckBPExists()</td><td>SAP: /BusinessPartners('{CardCode}')</td><td style="color:#4CAF50;font-weight:bold;">GET</td><td>ตรวจสอบ BP มีอยู่หรือไม่</td></tr>
+            <tr><td>8</td><td>CreateBusinessPartner()</td><td>SAP: /BusinessPartners</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>สร้าง Business Partner ใหม่</td></tr>
+            <tr><td>9</td><td>UpdateBusinessPartner()</td><td>SAP: /BusinessPartners('{CardCode}')</td><td style="color:#9C27B0;font-weight:bold;">PATCH</td><td>อัปเดตข้อมูล BP</td></tr>
+            <tr><td>10</td><td>CheckProjectExists()</td><td>SAP: /ProjectManagements('{Code}')</td><td style="color:#4CAF50;font-weight:bold;">GET</td><td>ตรวจสอบ Project มีอยู่หรือไม่</td></tr>
+            <tr><td>11</td><td>CreateProject()</td><td>SAP: /ProjectManagements</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>สร้าง Project ใหม่</td></tr>
+            <tr><td>12</td><td>UpdateProject()</td><td>SAP: /ProjectManagements('{Code}')</td><td style="color:#9C27B0;font-weight:bold;">PATCH</td><td>อัปเดตข้อมูล Project</td></tr>
+            <tr><td>13</td><td>CreateAPInvoice()</td><td>SAP: /PurchaseInvoices</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>สร้าง AP Invoice ใหม่</td></tr>
+            <tr><td>14</td><td>GetAPInvoice()</td><td>SAP: /PurchaseInvoices({DocEntry})</td><td style="color:#4CAF50;font-weight:bold;">GET</td><td>ดึงข้อมูล Invoice</td></tr>
+            <tr><td>15</td><td>CancelAPInvoice()</td><td>SAP: /PurchaseInvoices({DocEntry})/Cancel</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>ยกเลิก Invoice</td></tr>
+            <tr><td>16</td><td>UpdatePDMSStatus()</td><td>PDMS: /projects/{id}</td><td style="color:#9C27B0;font-weight:bold;">PATCH</td><td>อัปเดตสถานะกลับไป PDMS</td></tr>
+            <!-- Update Status Process -->
+            <tr><td colspan="5" style="background:#f0f0f0;font-weight:bold;">Update Status Process (SAP → PDMS)</td></tr>
+            <tr><td>17</td><td>GetOutgoingPayments()</td><td>SAP: /OutgoingPayments</td><td style="color:#4CAF50;font-weight:bold;">GET</td><td>ดึงข้อมูล Payment ทั้งหมด</td></tr>
+            <tr><td>18</td><td>GetPaymentDetail()</td><td>SAP: /OutgoingPayments({DocEntry})</td><td style="color:#4CAF50;font-weight:bold;">GET</td><td>ดึงรายละเอียด Payment</td></tr>
+            <tr><td>19</td><td>GetInvoiceByPayment()</td><td>SAP: /PurchaseInvoices</td><td style="color:#4CAF50;font-weight:bold;">GET</td><td>ค้นหา Invoice จาก Payment</td></tr>
+            <tr><td>20</td><td>UpdateProjectStatus()</td><td>PDMS: /projects/{id}</td><td style="color:#9C27B0;font-weight:bold;">PATCH</td><td>อัปเดตสถานะ = "โอนแล้ว"</td></tr>
+            <tr><td>21</td><td>CreateDisbursement()</td><td>PDMS: /disbursements</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>สร้างรายการเบิกจ่าย</td></tr>
+            <tr><td>22</td><td>UpdateSyncFlag()</td><td>SAP: /OutgoingPayments({DocEntry})</td><td style="color:#9C27B0;font-weight:bold;">PATCH</td><td>อัปเดต U_SLD_Sync = 'Y'</td></tr>
+            <!-- Logging & Error -->
+            <tr><td colspan="5" style="background:#f0f0f0;font-weight:bold;">Logging & Error Handling</td></tr>
+            <tr><td>23</td><td>WriteLog()</td><td>SAP: /@SLD_PDMS_LOG</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>บันทึก Log สำเร็จ</td></tr>
+            <tr><td>24</td><td>WriteErrorLog()</td><td>SAP: /@SLD_PDMS_LOG</td><td style="color:#2196F3;font-weight:bold;">POST</td><td>บันทึก Log ข้อผิดพลาด</td></tr>
+            <tr><td>25</td><td>GetLogs()</td><td>SAP: /@SLD_PDMS_LOG</td><td style="color:#4CAF50;font-weight:bold;">GET</td><td>ดึงประวัติ Log</td></tr>
+            <tr><td>26</td><td>UpdateLogStatus()</td><td>SAP: /@SLD_PDMS_LOG('{Code}')</td><td style="color:#9C27B0;font-weight:bold;">PATCH</td><td>อัปเดตสถานะ Log</td></tr>
+            <tr><td>27</td><td>DeleteLog()</td><td>SAP: /@SLD_PDMS_LOG('{Code}')</td><td style="color:#f44336;font-weight:bold;">DELETE</td><td>ลบ Log เก่า</td></tr>
+        </table>
+
+        <div style="margin-top:15px;padding:10px;border:1px solid #000;font-size:10px;">
+            <strong>HTTP Methods:</strong><br>
+            • <span style="color:#4CAF50;font-weight:bold;">GET</span> - ดึงข้อมูล (Read)<br>
+            • <span style="color:#2196F3;font-weight:bold;">POST</span> - สร้างข้อมูลใหม่ (Create)<br>
+            • <span style="color:#FF9800;font-weight:bold;">PUT</span> - แก้ไขทั้งหมด (Replace) - ไม่ใช้ในระบบนี้<br>
+            • <span style="color:#9C27B0;font-weight:bold;">PATCH</span> - แก้ไขบางส่วน (Partial Update)<br>
+            • <span style="color:#f44336;font-weight:bold;">DELETE</span> - ลบข้อมูล
+        </div>
+    </div>
+
+    <!-- Section 7: Project Size Analysis -->
+    <div class="section">
+        <h3 class="section-title">7. Project Size Analysis</h3>
+
+        <table class="rel-table">
+            <tr>
+                <th>เกณฑ์วัด</th>
+                <th>โปรเจคนี้</th>
+                <th>เล็ก</th>
+                <th>กลาง</th>
+                <th>ใหญ่</th>
+            </tr>
+            <tr>
+                <td>จำนวน Entity/Table</td>
+                <td style="background:#fff3cd;font-weight:bold;">6 ตาราง</td>
+                <td>1-3</td>
+                <td style="background:#d4edda;">4-10</td>
+                <td>10+</td>
+            </tr>
+            <tr>
+                <td>จำนวน API Method</td>
+                <td style="background:#fff3cd;font-weight:bold;">27 methods</td>
+                <td>5-10</td>
+                <td style="background:#d4edda;">10-30</td>
+                <td>30+</td>
+            </tr>
+            <tr>
+                <td>จำนวน Process Flow</td>
+                <td style="background:#fff3cd;font-weight:bold;">2 flows</td>
+                <td>1</td>
+                <td style="background:#d4edda;">2-5</td>
+                <td>5+</td>
+            </tr>
+            <tr>
+                <td>ระบบที่เชื่อมต่อ</td>
+                <td style="background:#fff3cd;font-weight:bold;">2 ระบบ</td>
+                <td>1-2</td>
+                <td style="background:#d4edda;">2-4</td>
+                <td>5+</td>
+            </tr>
+            <tr>
+                <td>ทิศทางข้อมูล</td>
+                <td style="background:#fff3cd;font-weight:bold;">Bidirectional</td>
+                <td>One-way</td>
+                <td style="background:#d4edda;">Bidirectional</td>
+                <td>Multi-way</td>
+            </tr>
+            <tr>
+                <td>ความซับซ้อน Logic</td>
+                <td style="background:#fff3cd;font-weight:bold;">ปานกลาง</td>
+                <td>ง่าย</td>
+                <td style="background:#d4edda;">ปานกลาง</td>
+                <td>ซับซ้อนมาก</td>
+            </tr>
+        </table>
+
+        <div style="margin-top:20px;padding:15px;border:2px solid #000;background:#f9f9f9;">
+            <h4 style="margin-bottom:10px;font-size:14px;">สรุป: โปรเจคขนาด <span style="color:#FF9800;font-size:18px;">กลาง (Medium)</span></h4>
+            <p style="font-size:11px;line-height:1.8;">
+                <strong>จุดเด่นของโปรเจคนี้:</strong><br>
+                ✓ มี Bidirectional Sync (ส่งไป-รับกลับ)<br>
+                ✓ มี Error Handling และ Logging ครบ<br>
+                ✓ มี Authentication ทั้ง 2 ระบบ<br>
+                ✓ ใช้ RESTful API มาตรฐาน<br><br>
+
+                <strong>ถ้าจะทำให้ใหญ่ขึ้น อาจเพิ่ม:</strong><br>
+                • AR Invoice (ใบแจ้งหนี้ลูกค้า)<br>
+                • Purchase Order / Sales Order<br>
+                • Inventory Management<br>
+                • Report & Dashboard<br>
+                • Notification System (Email/Line)<br>
+                • Scheduler (Auto Sync ทุกวัน)
+            </p>
+        </div>
+
+        <div style="margin-top:15px;padding:10px;border:1px solid #000;font-size:10px;">
+            <strong>ประมาณการทีมและเวลา:</strong><br>
+            • ทีมพัฒนา: 1-2 คน<br>
+            • ระยะเวลา: 2-3 เดือน (พัฒนา + ทดสอบ)<br>
+            • เทคโนโลยี: C# .NET + SAP B1 Service Layer + PDMS API
+        </div>
+    </div>
+
+    <!-- Section 8: Sequence Diagram -->
+    <div class="section">
+        <h3 class="section-title">8. Sequence Diagram</h3>
+
+        <div class="diagram-box">
+            <div class="diagram-title">8.1 Sequence Diagram: Import Process (PDMS → SAP B1)</div>
+            <svg class="diagram-svg" width="800" height="680" viewBox="0 0 800 680">
+                <!-- Actors/Objects -->
+                <rect x="30" y="20" width="80" height="40" class="entity-rect"/>
+                <text x="70" y="45" text-anchor="middle" class="label-bold" style="font-size:10px;">User/Timer</text>
+                <line x1="70" y1="60" x2="70" y2="650" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <rect x="160" y="20" width="100" height="40" class="entity-rect"/>
+                <text x="210" y="38" text-anchor="middle" class="label-bold" style="font-size:10px;">Integration</text>
+                <text x="210" y="52" text-anchor="middle" class="label-small">Service</text>
+                <line x1="210" y1="60" x2="210" y2="650" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <rect x="330" y="20" width="100" height="40" class="entity-rect"/>
+                <text x="380" y="45" text-anchor="middle" class="label-bold" style="font-size:10px;">PDMS API</text>
+                <line x1="380" y1="60" x2="380" y2="650" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <rect x="500" y="20" width="100" height="40" class="entity-rect"/>
+                <text x="550" y="38" text-anchor="middle" class="label-bold" style="font-size:10px;">SAP B1</text>
+                <text x="550" y="52" text-anchor="middle" class="label-small">Service Layer</text>
+                <line x1="550" y1="60" x2="550" y2="650" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <rect x="670" y="20" width="100" height="40" class="entity-rect"/>
+                <text x="720" y="45" text-anchor="middle" class="label-bold" style="font-size:10px;">Log DB</text>
+                <line x1="720" y1="60" x2="720" y2="650" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <!-- Activation boxes -->
+                <rect x="205" y="90" width="10" height="540" fill="#e3f2fd" stroke="#000" stroke-width="1"/>
+
+                <!-- 1. Start Import -->
+                <line x1="70" y1="100" x2="205" y2="100" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="137" y="95" text-anchor="middle" class="label-small">1: StartImport()</text>
+
+                <!-- 2. Login PDMS -->
+                <line x1="215" y1="130" x2="375" y2="130" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="295" y="125" text-anchor="middle" class="label-small" style="fill:#2196F3;">2: POST /auth/login</text>
+                <line x1="375" y1="145" x2="215" y2="145" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="295" y="158" text-anchor="middle" class="label-small">return: JWT Token</text>
+
+                <!-- 3. Login SAP -->
+                <line x1="215" y1="175" x2="545" y2="175" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="380" y="170" text-anchor="middle" class="label-small" style="fill:#2196F3;">3: POST /Login</text>
+                <line x1="545" y1="190" x2="215" y2="190" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="380" y="203" text-anchor="middle" class="label-small">return: SessionId</text>
+
+                <!-- 4. Get Projects -->
+                <line x1="215" y1="225" x2="375" y2="225" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="295" y="220" text-anchor="middle" class="label-small" style="fill:#4CAF50;">4: GET /projects</text>
+                <line x1="375" y1="240" x2="215" y2="240" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="295" y="253" text-anchor="middle" class="label-small">return: Project[]</text>
+
+                <!-- Loop box -->
+                <rect x="180" y="270" width="560" height="280" fill="none" stroke="#666" stroke-width="1"/>
+                <rect x="180" y="270" width="80" height="18" fill="#f5f5f5" stroke="#666" stroke-width="1"/>
+                <text x="220" y="282" text-anchor="middle" class="label-small" style="font-weight:bold;">loop</text>
+                <text x="300" y="282" class="label-small">[foreach project]</text>
+
+                <!-- 5. Check BP -->
+                <line x1="215" y1="300" x2="545" y2="300" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="380" y="295" text-anchor="middle" class="label-small" style="fill:#4CAF50;">5: GET /BusinessPartners('{CardCode}')</text>
+                <line x1="545" y1="315" x2="215" y2="315" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="380" y="328" text-anchor="middle" class="label-small">return: BP or 404</text>
+
+                <!-- Alt box -->
+                <rect x="195" y="340" width="370" height="70" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="3,2"/>
+                <rect x="195" y="340" width="40" height="15" fill="#f5f5f5" stroke="#999" stroke-width="1"/>
+                <text x="215" y="350" text-anchor="middle" class="label-small" style="font-size:8px;">alt</text>
+                <text x="270" y="350" class="label-small" style="font-size:8px;">[not exists]</text>
+
+                <!-- 6. Create BP -->
+                <line x1="215" y1="365" x2="545" y2="365" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="380" y="360" text-anchor="middle" class="label-small" style="fill:#2196F3;">6a: POST /BusinessPartners</text>
+
+                <line x1="195" y1="385" x2="565" y2="385" stroke="#999" stroke-width="1" stroke-dasharray="3,2"/>
+                <text x="270" y="398" class="label-small" style="font-size:8px;">[exists]</text>
+
+                <!-- 6b. Update BP -->
+                <line x1="215" y1="400" x2="545" y2="400" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="380" y="395" text-anchor="middle" class="label-small" style="fill:#9C27B0;">6b: PATCH /BusinessPartners</text>
+
+                <!-- 7. Create/Update Project -->
+                <line x1="215" y1="430" x2="545" y2="430" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="380" y="425" text-anchor="middle" class="label-small" style="fill:#2196F3;">7: POST/PATCH /ProjectManagements</text>
+                <line x1="545" y1="445" x2="215" y2="445" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="380" y="458" text-anchor="middle" class="label-small">return: Project Code</text>
+
+                <!-- 8. Create Invoice -->
+                <line x1="215" y1="475" x2="545" y2="475" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="380" y="470" text-anchor="middle" class="label-small" style="fill:#2196F3;">8: POST /PurchaseInvoices</text>
+                <line x1="545" y1="490" x2="215" y2="490" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="380" y="503" text-anchor="middle" class="label-small">return: DocEntry</text>
+
+                <!-- 9. Write Log -->
+                <line x1="215" y1="525" x2="715" y2="525" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="465" y="520" text-anchor="middle" class="label-small" style="fill:#2196F3;">9: POST /@SLD_PDMS_LOG</text>
+
+                <!-- End Loop -->
+
+                <!-- 10. Update PDMS Status -->
+                <line x1="215" y1="570" x2="375" y2="570" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="295" y="565" text-anchor="middle" class="label-small" style="fill:#9C27B0;">10: PATCH /projects/{id}</text>
+                <line x1="375" y1="585" x2="215" y2="585" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="295" y="598" text-anchor="middle" class="label-small">return: Success</text>
+
+                <!-- 11. Return to User -->
+                <line x1="205" y1="620" x2="75" y2="620" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="140" y="635" text-anchor="middle" class="label-small">11: ImportResult</text>
+            </svg>
+        </div>
+
+        <div class="diagram-box" style="margin-top:25px;">
+            <div class="diagram-title">8.2 Sequence Diagram: Update Status Process (SAP B1 → PDMS)</div>
+            <svg class="diagram-svg" width="800" height="580" viewBox="0 0 800 580">
+                <!-- Actors/Objects -->
+                <rect x="30" y="20" width="80" height="40" class="entity-rect"/>
+                <text x="70" y="45" text-anchor="middle" class="label-bold" style="font-size:10px;">Scheduler</text>
+                <line x1="70" y1="60" x2="70" y2="550" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <rect x="160" y="20" width="100" height="40" class="entity-rect"/>
+                <text x="210" y="38" text-anchor="middle" class="label-bold" style="font-size:10px;">Integration</text>
+                <text x="210" y="52" text-anchor="middle" class="label-small">Service</text>
+                <line x1="210" y1="60" x2="210" y2="550" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <rect x="330" y="20" width="100" height="40" class="entity-rect"/>
+                <text x="380" y="38" text-anchor="middle" class="label-bold" style="font-size:10px;">SAP B1</text>
+                <text x="380" y="52" text-anchor="middle" class="label-small">Service Layer</text>
+                <line x1="380" y1="60" x2="380" y2="550" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <rect x="500" y="20" width="100" height="40" class="entity-rect"/>
+                <text x="550" y="45" text-anchor="middle" class="label-bold" style="font-size:10px;">PDMS API</text>
+                <line x1="550" y1="60" x2="550" y2="550" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <rect x="670" y="20" width="100" height="40" class="entity-rect"/>
+                <text x="720" y="45" text-anchor="middle" class="label-bold" style="font-size:10px;">Log DB</text>
+                <line x1="720" y1="60" x2="720" y2="550" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/>
+
+                <!-- Activation boxes -->
+                <rect x="205" y="90" width="10" height="440" fill="#fff3e0" stroke="#000" stroke-width="1"/>
+
+                <!-- 1. Trigger -->
+                <line x1="70" y1="100" x2="205" y2="100" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="137" y="95" text-anchor="middle" class="label-small">1: TriggerSync()</text>
+
+                <!-- 2. Get Payments -->
+                <line x1="215" y1="130" x2="375" y2="130" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="295" y="125" text-anchor="middle" class="label-small" style="fill:#4CAF50;">2: GET /OutgoingPayments</text>
+                <text x="295" y="140" text-anchor="middle" class="label-small" style="font-size:8px;">$filter=U_SLD_Sync eq 'N'</text>
+                <line x1="375" y1="155" x2="215" y2="155" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="295" y="168" text-anchor="middle" class="label-small">return: Payment[]</text>
+
+                <!-- Loop box -->
+                <rect x="180" y="185" width="560" height="280" fill="none" stroke="#666" stroke-width="1"/>
+                <rect x="180" y="185" width="80" height="18" fill="#f5f5f5" stroke="#666" stroke-width="1"/>
+                <text x="220" y="197" text-anchor="middle" class="label-small" style="font-weight:bold;">loop</text>
+                <text x="310" y="197" class="label-small">[foreach payment]</text>
+
+                <!-- 3. Get Invoice -->
+                <line x1="215" y1="215" x2="375" y2="215" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="295" y="210" text-anchor="middle" class="label-small" style="fill:#4CAF50;">3: GET /PurchaseInvoices</text>
+                <line x1="375" y1="230" x2="215" y2="230" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="295" y="243" text-anchor="middle" class="label-small">return: Invoice with Project</text>
+
+                <!-- 4. Update PDMS Status -->
+                <line x1="215" y1="270" x2="545" y2="270" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="380" y="265" text-anchor="middle" class="label-small" style="fill:#9C27B0;">4: PATCH /projects/{id}</text>
+                <text x="380" y="280" text-anchor="middle" class="label-small" style="font-size:8px;">status: "โอนเงินแล้ว"</text>
+                <line x1="545" y1="295" x2="215" y2="295" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="380" y="308" text-anchor="middle" class="label-small">return: 200 OK</text>
+
+                <!-- 5. Create Disbursement -->
+                <line x1="215" y1="335" x2="545" y2="335" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="380" y="330" text-anchor="middle" class="label-small" style="fill:#2196F3;">5: POST /disbursements</text>
+                <line x1="545" y1="350" x2="215" y2="350" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="380" y="363" text-anchor="middle" class="label-small">return: Disbursement ID</text>
+
+                <!-- 6. Update Sync Flag -->
+                <line x1="215" y1="390" x2="375" y2="390" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="295" y="385" text-anchor="middle" class="label-small" style="fill:#9C27B0;">6: PATCH /OutgoingPayments</text>
+                <text x="295" y="400" text-anchor="middle" class="label-small" style="font-size:8px;">U_SLD_Sync = 'Y'</text>
+                <line x1="375" y1="415" x2="215" y2="415" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+
+                <!-- 7. Write Log -->
+                <line x1="215" y1="440" x2="715" y2="440" class="arrow-line" marker-end="url(#arrow)"/>
+                <text x="465" y="435" text-anchor="middle" class="label-small" style="fill:#2196F3;">7: POST /@SLD_PDMS_LOG</text>
+
+                <!-- End Loop -->
+
+                <!-- 8. Return -->
+                <line x1="205" y1="490" x2="75" y2="490" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/>
+                <text x="140" y="505" text-anchor="middle" class="label-small">8: SyncResult</text>
+            </svg>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">8.3 คำอธิบาย Sequence Diagram Symbols</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:15%;">สัญลักษณ์</th>
+                    <th style="width:20%;">ชื่อ</th>
+                    <th style="width:65%;">ความหมาย</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        <svg width="60" height="30"><rect x="5" y="5" width="50" height="20" fill="#fff" stroke="#000" stroke-width="1.5"/><text x="30" y="18" text-anchor="middle" style="font-size:8px;">Object</text></svg>
+                    </td>
+                    <td>Actor / Object</td>
+                    <td>ตัวแทนระบบหรือบุคคลที่มีส่วนร่วมในกระบวนการ เช่น User, Integration Service, SAP B1</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        <svg width="60" height="50"><line x1="30" y1="5" x2="30" y2="45" stroke="#000" stroke-width="1" stroke-dasharray="5,3"/></svg>
+                    </td>
+                    <td>Lifeline</td>
+                    <td>เส้นประแนวตั้งแสดงระยะเวลาที่ Object มีอยู่ในระบบ</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        <svg width="60" height="50"><rect x="25" y="5" width="10" height="40" fill="#e3f2fd" stroke="#000" stroke-width="1"/></svg>
+                    </td>
+                    <td>Activation Bar</td>
+                    <td>กล่องบน Lifeline แสดงช่วงเวลาที่ Object กำลังทำงาน (Active)</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        <svg width="60" height="20"><line x1="5" y1="10" x2="55" y2="10" stroke="#000" stroke-width="1.5" marker-end="url(#arrow)"/></svg>
+                    </td>
+                    <td>Synchronous Message</td>
+                    <td>ข้อความเรียก (Call) - ผู้ส่งรอจนกว่าจะได้รับการตอบกลับ เช่น API Request</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        <svg width="60" height="20"><line x1="5" y1="10" x2="55" y2="10" stroke="#000" stroke-width="1" stroke-dasharray="4,2" marker-end="url(#arrow)"/></svg>
+                    </td>
+                    <td>Return Message</td>
+                    <td>ข้อความตอบกลับ (Response) - ผลลัพธ์จากการเรียก เช่น API Response</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        <svg width="60" height="30"><rect x="5" y="5" width="50" height="20" fill="none" stroke="#666" stroke-width="1"/><rect x="5" y="5" width="25" height="10" fill="#f5f5f5" stroke="#666" stroke-width="1"/><text x="17" y="12" style="font-size:6px;">loop</text></svg>
+                    </td>
+                    <td>Loop Fragment</td>
+                    <td>กรอบแสดงการทำซ้ำ (Loop) เช่น foreach project</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        <svg width="60" height="30"><rect x="5" y="5" width="50" height="20" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="3,2"/><rect x="5" y="5" width="20" height="10" fill="#f5f5f5" stroke="#999" stroke-width="1"/><text x="15" y="12" style="font-size:6px;">alt</text></svg>
+                    </td>
+                    <td>Alt Fragment</td>
+                    <td>กรอบแสดงทางเลือก (Alternative) เช่น if-else condition</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 9: Data Dictionary -->
+    <div class="section">
+        <h3 class="section-title">9. Data Dictionary</h3>
+
+        <div class="diagram-box">
+            <div class="diagram-title">9.1 BUSINESS_PARTNER (คู่ค้า) - SAP Table: OCRD</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:5%;">Key</th>
+                    <th style="width:18%;">Field Name</th>
+                    <th style="width:12%;">Data Type</th>
+                    <th style="width:8%;">Size</th>
+                    <th style="width:8%;">Required</th>
+                    <th style="width:25%;">Description</th>
+                    <th style="width:24%;">Example</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="pk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">PK</span></td>
+                    <td style="font-weight:bold;">CardCode</td>
+                    <td>VARCHAR</td>
+                    <td>15</td>
+                    <td style="color:red;">Yes</td>
+                    <td>รหัสคู่ค้า (Vendor Code)</td>
+                    <td>V00001, SUP-2024-001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>CardName</td>
+                    <td>NVARCHAR</td>
+                    <td>100</td>
+                    <td style="color:red;">Yes</td>
+                    <td>ชื่อคู่ค้า/บริษัท</td>
+                    <td>บริษัท เอบีซี จำกัด</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>CardType</td>
+                    <td>VARCHAR</td>
+                    <td>1</td>
+                    <td style="color:red;">Yes</td>
+                    <td>ประเภท: S=Supplier, C=Customer</td>
+                    <td>S</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>GroupCode</td>
+                    <td>INT</td>
+                    <td>-</td>
+                    <td>No</td>
+                    <td>รหัสกลุ่มคู่ค้า</td>
+                    <td>100</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Phone1</td>
+                    <td>VARCHAR</td>
+                    <td>20</td>
+                    <td>No</td>
+                    <td>เบอร์โทรศัพท์หลัก</td>
+                    <td>02-123-4567</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Phone2</td>
+                    <td>VARCHAR</td>
+                    <td>20</td>
+                    <td>No</td>
+                    <td>เบอร์โทรศัพท์สำรอง</td>
+                    <td>081-234-5678</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>E_Mail</td>
+                    <td>VARCHAR</td>
+                    <td>100</td>
+                    <td>No</td>
+                    <td>อีเมล</td>
+                    <td>contact@abc.co.th</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Address</td>
+                    <td>NVARCHAR</td>
+                    <td>254</td>
+                    <td>No</td>
+                    <td>ที่อยู่</td>
+                    <td>123 ถนนสุขุมวิท</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>TaxId</td>
+                    <td>VARCHAR</td>
+                    <td>20</td>
+                    <td>No</td>
+                    <td>เลขประจำตัวผู้เสียภาษี</td>
+                    <td>0105561234567</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_SLD_PDMS_ID</td>
+                    <td>VARCHAR</td>
+                    <td>50</td>
+                    <td>No</td>
+                    <td>รหัสอ้างอิงจาก PDMS (UDF)</td>
+                    <td>PDMS-BP-001</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">9.2 PROJECT (โครงการ) - SAP Table: OPRJ</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:5%;">Key</th>
+                    <th style="width:18%;">Field Name</th>
+                    <th style="width:12%;">Data Type</th>
+                    <th style="width:8%;">Size</th>
+                    <th style="width:8%;">Required</th>
+                    <th style="width:25%;">Description</th>
+                    <th style="width:24%;">Example</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="pk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">PK</span></td>
+                    <td style="font-weight:bold;">Code</td>
+                    <td>VARCHAR</td>
+                    <td>20</td>
+                    <td style="color:red;">Yes</td>
+                    <td>รหัสโครงการ</td>
+                    <td>PRJ-2024-001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Name</td>
+                    <td>NVARCHAR</td>
+                    <td>100</td>
+                    <td style="color:red;">Yes</td>
+                    <td>ชื่อโครงการ</td>
+                    <td>โครงการก่อสร้างอาคาร A</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="fk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">FK</span></td>
+                    <td>CardCode</td>
+                    <td>VARCHAR</td>
+                    <td>15</td>
+                    <td>No</td>
+                    <td>รหัสเจ้าของโครงการ (Ref: OCRD)</td>
+                    <td>V00001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>ValidFrom</td>
+                    <td>DATE</td>
+                    <td>-</td>
+                    <td>No</td>
+                    <td>วันที่เริ่มต้นโครงการ</td>
+                    <td>2024-01-01</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>ValidTo</td>
+                    <td>DATE</td>
+                    <td>-</td>
+                    <td>No</td>
+                    <td>วันที่สิ้นสุดโครงการ</td>
+                    <td>2024-12-31</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Active</td>
+                    <td>CHAR</td>
+                    <td>1</td>
+                    <td>No</td>
+                    <td>สถานะ: Y=Active, N=Inactive</td>
+                    <td>Y</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_SLD_PDMS_ID</td>
+                    <td>VARCHAR</td>
+                    <td>50</td>
+                    <td>No</td>
+                    <td>รหัสโครงการจาก PDMS (UDF)</td>
+                    <td>PDMS-PRJ-12345</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_SLD_Period</td>
+                    <td>VARCHAR</td>
+                    <td>10</td>
+                    <td>No</td>
+                    <td>งวดงาน (UDF)</td>
+                    <td>งวดที่ 1</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_SLD_Budget</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td>No</td>
+                    <td>งบประมาณโครงการ (UDF)</td>
+                    <td>1500000.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_SLD_Status</td>
+                    <td>VARCHAR</td>
+                    <td>20</td>
+                    <td>No</td>
+                    <td>สถานะจาก PDMS (UDF)</td>
+                    <td>อนุมัติแล้ว</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">9.3 AP_INVOICE (ใบแจ้งหนี้ซื้อ) - SAP Table: OPCH</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:5%;">Key</th>
+                    <th style="width:18%;">Field Name</th>
+                    <th style="width:12%;">Data Type</th>
+                    <th style="width:8%;">Size</th>
+                    <th style="width:8%;">Required</th>
+                    <th style="width:25%;">Description</th>
+                    <th style="width:24%;">Example</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="pk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">PK</span></td>
+                    <td style="font-weight:bold;">DocEntry</td>
+                    <td>INT</td>
+                    <td>-</td>
+                    <td style="color:red;">Yes</td>
+                    <td>รหัสเอกสาร (Auto Generate)</td>
+                    <td>1001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>DocNum</td>
+                    <td>INT</td>
+                    <td>-</td>
+                    <td style="color:red;">Yes</td>
+                    <td>เลขที่เอกสาร</td>
+                    <td>INV-2024-0001</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="fk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">FK</span></td>
+                    <td>CardCode</td>
+                    <td>VARCHAR</td>
+                    <td>15</td>
+                    <td style="color:red;">Yes</td>
+                    <td>รหัสผู้ขาย (Ref: OCRD)</td>
+                    <td>V00001</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="fk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">FK</span></td>
+                    <td>Project</td>
+                    <td>VARCHAR</td>
+                    <td>20</td>
+                    <td>No</td>
+                    <td>รหัสโครงการ (Ref: OPRJ)</td>
+                    <td>PRJ-2024-001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>DocDate</td>
+                    <td>DATE</td>
+                    <td>-</td>
+                    <td style="color:red;">Yes</td>
+                    <td>วันที่เอกสาร</td>
+                    <td>2024-03-15</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>DocDueDate</td>
+                    <td>DATE</td>
+                    <td>-</td>
+                    <td style="color:red;">Yes</td>
+                    <td>วันครบกำหนดชำระ</td>
+                    <td>2024-04-15</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>DocTotal</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td style="color:red;">Yes</td>
+                    <td>ยอดรวมทั้งหมด</td>
+                    <td>107000.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>VatSum</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td>No</td>
+                    <td>ยอด VAT</td>
+                    <td>7000.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>DocStatus</td>
+                    <td>CHAR</td>
+                    <td>1</td>
+                    <td>No</td>
+                    <td>สถานะ: O=Open, C=Closed</td>
+                    <td>O</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>PaidToDate</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td>No</td>
+                    <td>ยอดที่ชำระแล้ว</td>
+                    <td>50000.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Comments</td>
+                    <td>NVARCHAR</td>
+                    <td>254</td>
+                    <td>No</td>
+                    <td>หมายเหตุ</td>
+                    <td>ค่างวดที่ 1</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_SLD_PDMS_REF</td>
+                    <td>VARCHAR</td>
+                    <td>50</td>
+                    <td>No</td>
+                    <td>เลขอ้างอิงจาก PDMS (UDF)</td>
+                    <td>PDMS-INV-001</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">9.4 INVOICE_LINE (รายการในใบแจ้งหนี้) - SAP Table: PCH1</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:5%;">Key</th>
+                    <th style="width:18%;">Field Name</th>
+                    <th style="width:12%;">Data Type</th>
+                    <th style="width:8%;">Size</th>
+                    <th style="width:8%;">Required</th>
+                    <th style="width:25%;">Description</th>
+                    <th style="width:24%;">Example</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="pk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">PK</span></td>
+                    <td style="font-weight:bold;">DocEntry</td>
+                    <td>INT</td>
+                    <td>-</td>
+                    <td style="color:red;">Yes</td>
+                    <td>รหัสเอกสาร (Ref: OPCH)</td>
+                    <td>1001</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="pk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">PK</span></td>
+                    <td style="font-weight:bold;">LineNum</td>
+                    <td>INT</td>
+                    <td>-</td>
+                    <td style="color:red;">Yes</td>
+                    <td>ลำดับบรรทัด (เริ่มจาก 0)</td>
+                    <td>0, 1, 2</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>ItemCode</td>
+                    <td>VARCHAR</td>
+                    <td>50</td>
+                    <td>No</td>
+                    <td>รหัสสินค้า (ถ้ามี)</td>
+                    <td>MAT-001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Dscription</td>
+                    <td>NVARCHAR</td>
+                    <td>200</td>
+                    <td>No</td>
+                    <td>รายละเอียดรายการ</td>
+                    <td>ค่าวัสดุก่อสร้าง</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>AccountCode</td>
+                    <td>VARCHAR</td>
+                    <td>15</td>
+                    <td style="color:red;">Yes</td>
+                    <td>รหัสบัญชี</td>
+                    <td>5110-001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Quantity</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td>No</td>
+                    <td>จำนวน</td>
+                    <td>1.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Price</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td>No</td>
+                    <td>ราคาต่อหน่วย</td>
+                    <td>100000.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>LineTotal</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td style="color:red;">Yes</td>
+                    <td>ยอดเงินรายการนี้</td>
+                    <td>100000.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>VatGroup</td>
+                    <td>VARCHAR</td>
+                    <td>8</td>
+                    <td>No</td>
+                    <td>รหัสกลุ่มภาษี</td>
+                    <td>O7</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="fk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">FK</span></td>
+                    <td>Project</td>
+                    <td>VARCHAR</td>
+                    <td>20</td>
+                    <td>No</td>
+                    <td>รหัสโครงการระดับบรรทัด</td>
+                    <td>PRJ-2024-001</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">9.5 PAYMENT (การจ่ายเงิน) - SAP Table: OVPM</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:5%;">Key</th>
+                    <th style="width:18%;">Field Name</th>
+                    <th style="width:12%;">Data Type</th>
+                    <th style="width:8%;">Size</th>
+                    <th style="width:8%;">Required</th>
+                    <th style="width:25%;">Description</th>
+                    <th style="width:24%;">Example</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="pk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">PK</span></td>
+                    <td style="font-weight:bold;">DocEntry</td>
+                    <td>INT</td>
+                    <td>-</td>
+                    <td style="color:red;">Yes</td>
+                    <td>รหัสเอกสารจ่ายเงิน</td>
+                    <td>5001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>DocNum</td>
+                    <td>INT</td>
+                    <td>-</td>
+                    <td style="color:red;">Yes</td>
+                    <td>เลขที่เอกสาร</td>
+                    <td>PAY-2024-001</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="fk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">FK</span></td>
+                    <td>CardCode</td>
+                    <td>VARCHAR</td>
+                    <td>15</td>
+                    <td style="color:red;">Yes</td>
+                    <td>รหัสผู้รับเงิน (Ref: OCRD)</td>
+                    <td>V00001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>DocDate</td>
+                    <td>DATE</td>
+                    <td>-</td>
+                    <td style="color:red;">Yes</td>
+                    <td>วันที่จ่ายเงิน</td>
+                    <td>2024-04-01</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>DocTotal</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td style="color:red;">Yes</td>
+                    <td>ยอดจ่ายรวม</td>
+                    <td>107000.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>CashSum</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td>No</td>
+                    <td>ยอดจ่ายเงินสด</td>
+                    <td>0.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>TransferSum</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td>No</td>
+                    <td>ยอดโอนเงิน</td>
+                    <td>107000.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>TransferAccount</td>
+                    <td>VARCHAR</td>
+                    <td>15</td>
+                    <td>No</td>
+                    <td>บัญชีธนาคารที่โอน</td>
+                    <td>1100-001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>TransferRef</td>
+                    <td>VARCHAR</td>
+                    <td>27</td>
+                    <td>No</td>
+                    <td>เลขอ้างอิงการโอน</td>
+                    <td>TRF20240401001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Remarks</td>
+                    <td>NVARCHAR</td>
+                    <td>254</td>
+                    <td>No</td>
+                    <td>หมายเหตุ</td>
+                    <td>จ่ายค่างวดที่ 1</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_SLD_Sync</td>
+                    <td>CHAR</td>
+                    <td>1</td>
+                    <td>No</td>
+                    <td>สถานะ Sync: Y/N (UDF)</td>
+                    <td>N</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_SLD_SyncDate</td>
+                    <td>DATETIME</td>
+                    <td>-</td>
+                    <td>No</td>
+                    <td>วันที่ Sync ล่าสุด (UDF)</td>
+                    <td>2024-04-01 10:30:00</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">9.6 PDMS_LOG (บันทึกการ Sync) - SAP UDT: @SLD_PDMS_LOG</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:5%;">Key</th>
+                    <th style="width:18%;">Field Name</th>
+                    <th style="width:12%;">Data Type</th>
+                    <th style="width:8%;">Size</th>
+                    <th style="width:8%;">Required</th>
+                    <th style="width:25%;">Description</th>
+                    <th style="width:24%;">Example</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;"><span class="pk" style="padding:2px 4px;font-size:8px;border:1px solid #000;">PK</span></td>
+                    <td style="font-weight:bold;">Code</td>
+                    <td>VARCHAR</td>
+                    <td>50</td>
+                    <td style="color:red;">Yes</td>
+                    <td>รหัส Log (Auto Generate)</td>
+                    <td>LOG-20240315-001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Name</td>
+                    <td>NVARCHAR</td>
+                    <td>100</td>
+                    <td>No</td>
+                    <td>ชื่อ Log</td>
+                    <td>Import Project PRJ-001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_Action</td>
+                    <td>VARCHAR</td>
+                    <td>20</td>
+                    <td style="color:red;">Yes</td>
+                    <td>ประเภทการกระทำ</td>
+                    <td>IMPORT, UPDATE, SYNC</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_Entity</td>
+                    <td>VARCHAR</td>
+                    <td>30</td>
+                    <td>No</td>
+                    <td>Entity ที่เกี่ยวข้อง</td>
+                    <td>PROJECT, INVOICE, PAYMENT</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_EntityKey</td>
+                    <td>VARCHAR</td>
+                    <td>50</td>
+                    <td>No</td>
+                    <td>รหัส Entity</td>
+                    <td>PRJ-2024-001</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_Status</td>
+                    <td>VARCHAR</td>
+                    <td>10</td>
+                    <td style="color:red;">Yes</td>
+                    <td>สถานะ: SUCCESS / ERROR</td>
+                    <td>SUCCESS</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_Amount</td>
+                    <td>DECIMAL</td>
+                    <td>19,6</td>
+                    <td>No</td>
+                    <td>ยอดเงินที่เกี่ยวข้อง</td>
+                    <td>107000.00</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_Message</td>
+                    <td>NVARCHAR</td>
+                    <td>500</td>
+                    <td>No</td>
+                    <td>ข้อความ/ข้อผิดพลาด</td>
+                    <td>Created successfully</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_Request</td>
+                    <td>NTEXT</td>
+                    <td>-</td>
+                    <td>No</td>
+                    <td>Request JSON (for debug)</td>
+                    <td>{"CardCode":"V00001"...}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_Response</td>
+                    <td>NTEXT</td>
+                    <td>-</td>
+                    <td>No</td>
+                    <td>Response JSON (for debug)</td>
+                    <td>{"DocEntry":1001...}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_CreatedAt</td>
+                    <td>DATETIME</td>
+                    <td>-</td>
+                    <td style="color:red;">Yes</td>
+                    <td>วันเวลาที่บันทึก</td>
+                    <td>2024-03-15 10:30:45</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>U_CreatedBy</td>
+                    <td>VARCHAR</td>
+                    <td>50</td>
+                    <td>No</td>
+                    <td>ผู้บันทึก/ระบบ</td>
+                    <td>INTEGRATION_SVC</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">9.7 คำอธิบาย Data Type ที่ใช้</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:15%;">Data Type</th>
+                    <th style="width:20%;">SAP Type</th>
+                    <th style="width:35%;">คำอธิบาย</th>
+                    <th style="width:30%;">ช่วงค่า / หมายเหตุ</th>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">VARCHAR</td>
+                    <td>db_Alpha</td>
+                    <td>ตัวอักษร (ภาษาอังกฤษ, ตัวเลข)</td>
+                    <td>Max 254 characters</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">NVARCHAR</td>
+                    <td>db_Alpha</td>
+                    <td>ตัวอักษร Unicode (รองรับภาษาไทย)</td>
+                    <td>Max 254 characters</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">INT</td>
+                    <td>db_Numeric</td>
+                    <td>ตัวเลขจำนวนเต็ม</td>
+                    <td>-2,147,483,648 to 2,147,483,647</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">DECIMAL(19,6)</td>
+                    <td>db_Float</td>
+                    <td>ตัวเลขทศนิยม (เงิน, ปริมาณ)</td>
+                    <td>19 หลัก, 6 ทศนิยม</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">DATE</td>
+                    <td>db_Date</td>
+                    <td>วันที่</td>
+                    <td>Format: YYYY-MM-DD</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">DATETIME</td>
+                    <td>db_Date + db_Time</td>
+                    <td>วันที่และเวลา</td>
+                    <td>Format: YYYY-MM-DD HH:MM:SS</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">CHAR(1)</td>
+                    <td>db_Alpha</td>
+                    <td>ตัวอักษรเดี่ยว (Flag)</td>
+                    <td>เช่น Y/N, O/C, S/C</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold;">NTEXT</td>
+                    <td>db_Memo</td>
+                    <td>ข้อความยาว (Memo Field)</td>
+                    <td>ไม่จำกัดความยาว</td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin-top:20px;padding:15px;border:2px solid #000;background:#f9f9f9;">
+            <h4 style="margin-bottom:10px;font-size:12px;">สรุป Data Dictionary</h4>
+            <table class="rel-table" style="font-size:10px;">
+                <tr>
+                    <th>Entity</th>
+                    <th>Total Fields</th>
+                    <th>PK</th>
+                    <th>FK</th>
+                    <th>Required</th>
+                    <th>UDF</th>
+                </tr>
+                <tr>
+                    <td>BUSINESS_PARTNER</td>
+                    <td style="text-align:center;">10</td>
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:center;">0</td>
+                    <td style="text-align:center;">3</td>
+                    <td style="text-align:center;">1</td>
+                </tr>
+                <tr>
+                    <td>PROJECT</td>
+                    <td style="text-align:center;">10</td>
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:center;">2</td>
+                    <td style="text-align:center;">4</td>
+                </tr>
+                <tr>
+                    <td>AP_INVOICE</td>
+                    <td style="text-align:center;">12</td>
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:center;">2</td>
+                    <td style="text-align:center;">6</td>
+                    <td style="text-align:center;">1</td>
+                </tr>
+                <tr>
+                    <td>INVOICE_LINE</td>
+                    <td style="text-align:center;">10</td>
+                    <td style="text-align:center;">2</td>
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:center;">4</td>
+                    <td style="text-align:center;">0</td>
+                </tr>
+                <tr>
+                    <td>PAYMENT</td>
+                    <td style="text-align:center;">12</td>
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:center;">5</td>
+                    <td style="text-align:center;">2</td>
+                </tr>
+                <tr>
+                    <td>PDMS_LOG</td>
+                    <td style="text-align:center;">12</td>
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:center;">0</td>
+                    <td style="text-align:center;">4</td>
+                    <td style="text-align:center;">10</td>
+                </tr>
+                <tr style="background:#e8f5e9;font-weight:bold;">
+                    <td>รวม</td>
+                    <td style="text-align:center;">66 Fields</td>
+                    <td style="text-align:center;">7</td>
+                    <td style="text-align:center;">5</td>
+                    <td style="text-align:center;">24</td>
+                    <td style="text-align:center;">18</td>
+                </tr>
+            </table>
+            <p style="font-size:10px;margin-top:10px;">
+                <strong>หมายเหตุ:</strong> UDF = User Defined Field (ฟิลด์ที่สร้างเพิ่มเติมใน SAP B1 สำหรับการ Integration)
+            </p>
+        </div>
+    </div>
+
+</div>
+
+    <!-- Section 10: Outbound Process API Specification -->
+    <div class="section">
+        <h3 class="section-title">10. Outbound Process - API Specification (SAP → PDMS)</h3>
+
+        <div class="diagram-box">
+            <div class="diagram-title">10.1 Outbound Flow Overview</div>
+            <svg class="diagram-svg" width="750" height="250" viewBox="0 0 750 250">
+                <defs>
+                    <marker id="arrow10" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#000"/>
+                    </marker>
+                </defs>
+
+                <!-- SAP Box -->
+                <rect x="30" y="80" width="140" height="80" class="entity-rect"/>
+                <text x="100" y="105" text-anchor="middle" class="label-small">SAP Business One</text>
+                <text x="100" y="125" text-anchor="middle" class="label-bold">Outgoing Payment</text>
+                <text x="100" y="145" text-anchor="middle" class="label-small">(OVPM)</text>
+
+                <!-- Process 1 -->
+                <circle cx="280" cy="120" r="45" class="process-circle"/>
+                <text x="280" y="110" text-anchor="middle" class="label-small">2.1</text>
+                <text x="280" y="125" text-anchor="middle" class="label-bold">Query</text>
+                <text x="280" y="140" text-anchor="middle" class="label-small">Payment</text>
+
+                <!-- Process 2 -->
+                <circle cx="440" cy="120" r="45" class="process-circle"/>
+                <text x="440" y="110" text-anchor="middle" class="label-small">2.2</text>
+                <text x="440" y="125" text-anchor="middle" class="label-bold">Transform</text>
+                <text x="440" y="140" text-anchor="middle" class="label-small">& Send</text>
+
+                <!-- PDMS Box -->
+                <rect x="580" y="80" width="140" height="80" class="entity-rect"/>
+                <text x="650" y="105" text-anchor="middle" class="label-small">PDMS API</text>
+                <text x="650" y="125" text-anchor="middle" class="label-bold">Payment Status</text>
+                <text x="650" y="145" text-anchor="middle" class="label-small">Update</text>
+
+                <!-- DataStore -->
+                <line x1="340" y1="210" x2="480" y2="210" stroke="#000" stroke-width="2"/>
+                <line x1="340" y1="230" x2="480" y2="230" stroke="#000" stroke-width="2"/>
+                <text x="410" y="224" text-anchor="middle" class="label-small">D1: @SLD_PDMS_LOG</text>
+
+                <!-- Arrows -->
+                <line x1="170" y1="120" x2="230" y2="120" class="arrow-line" marker-end="url(#arrow10)"/>
+                <text x="200" y="110" text-anchor="middle" class="label-small">GET</text>
+
+                <line x1="330" y1="120" x2="390" y2="120" class="arrow-line" marker-end="url(#arrow10)"/>
+                <text x="360" y="110" text-anchor="middle" class="label-small">JSON</text>
+
+                <line x1="490" y1="120" x2="575" y2="120" class="arrow-line" marker-end="url(#arrow10)"/>
+                <text x="530" y="110" text-anchor="middle" class="label-small">PATCH</text>
+
+                <line x1="410" y1="165" x2="410" y2="205" class="arrow-line" marker-end="url(#arrow10)"/>
+                <text x="425" y="190" class="label-small">Log</text>
+            </svg>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">10.2 Outbound API Endpoints</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:8%;">ลำดับ</th>
+                    <th style="width:10%;">Method</th>
+                    <th style="width:35%;">Endpoint</th>
+                    <th style="width:47%;">Description</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">1</td>
+                    <td style="color:#2196F3;font-weight:bold;">GET</td>
+                    <td><code>/b1s/v1/VendorPayments</code></td>
+                    <td>ดึงข้อมูล Outgoing Payment จาก SAP (ใบจ่ายเงิน)</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">2</td>
+                    <td style="color:#4CAF50;font-weight:bold;">PATCH</td>
+                    <td><code>/v1/projects/{id}/payment-status</code></td>
+                    <td>อัพเดตสถานะการจ่ายเงินกลับไป PDMS</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">3</td>
+                    <td style="color:#FF9800;font-weight:bold;">POST</td>
+                    <td><code>/v1/projects/{id}/disbursements</code></td>
+                    <td>สร้างรายการเบิกจ่ายใน PDMS</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">10.3 Request/Response Format - Update Payment Status</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                <div style="background:#f5f5f5;padding:12px;border:1px solid #ccc;">
+                    <p style="font-weight:bold;font-size:11px;margin-bottom:8px;color:#4CAF50;">PATCH /v1/projects/{confirmation_document_number}/payment-status</p>
+                    <pre style="font-size:9px;margin:0;font-family:'Courier New',monospace;white-space:pre-wrap;">{
+  "status": "PAID",
+  "payment_date": "2025-01-15",
+  "payment_amount": 107000.00,
+  "sap_doc_num": 12345,
+  "sap_doc_entry": 1001,
+  "installment_number": 1,
+  "payment_method": "TRANSFER",
+  "bank_reference": "TRF20250115001",
+  "remarks": "จ่ายงวดที่ 1"
+}</pre>
+                </div>
+                <div style="background:#e8f5e9;padding:12px;border:1px solid #ccc;">
+                    <p style="font-weight:bold;font-size:11px;margin-bottom:8px;color:#2196F3;">Response (200 OK)</p>
+                    <pre style="font-size:9px;margin:0;font-family:'Courier New',monospace;white-space:pre-wrap;">{
+  "success": true,
+  "message": "Payment status updated",
+  "data": {
+    "project_id": "67-00001",
+    "status": "PAID",
+    "updated_at": "2025-01-15T10:30:45Z"
+  }
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">10.4 Request/Response Format - Create Disbursement</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                <div style="background:#f5f5f5;padding:12px;border:1px solid #ccc;">
+                    <p style="font-weight:bold;font-size:11px;margin-bottom:8px;color:#FF9800;">POST /v1/projects/{confirmation_document_number}/disbursements</p>
+                    <pre style="font-size:9px;margin:0;font-family:'Courier New',monospace;white-space:pre-wrap;">{
+  "disbursement_date": "2025-01-15",
+  "amount": 107000.00,
+  "installment_number": 1,
+  "payment_type": "BANK_TRANSFER",
+  "bank_account": "123-456-7890",
+  "bank_name": "ธนาคารกรุงไทย",
+  "sap_payment_doc_num": 12345,
+  "approved_by": "manager",
+  "remarks": "เบิกจ่ายงวดที่ 1"
+}</pre>
+                </div>
+                <div style="background:#e8f5e9;padding:12px;border:1px solid #ccc;">
+                    <p style="font-weight:bold;font-size:11px;margin-bottom:8px;color:#2196F3;">Response (201 Created)</p>
+                    <pre style="font-size:9px;margin:0;font-family:'Courier New',monospace;white-space:pre-wrap;">{
+  "success": true,
+  "message": "Disbursement created",
+  "data": {
+    "disbursement_id": 5678,
+    "project_id": "67-00001",
+    "amount": 107000.00,
+    "created_at": "2025-01-15T10:30:45Z"
+  }
+}</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">10.5 Outbound Process Flow Steps</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:8%;">Step</th>
+                    <th style="width:20%;">Action</th>
+                    <th style="width:15%;">Method</th>
+                    <th style="width:57%;">รายละเอียด</th>
+                </tr>
+                <tr>
+                    <td style="text-align:center;font-weight:bold;">1</td>
+                    <td>Query Payment</td>
+                    <td style="color:#2196F3;">GET SAP</td>
+                    <td>ดึงข้อมูล Outgoing Payment ที่ยังไม่ได้ส่งกลับ PDMS<br><code>$filter=U_SentToPdms eq 'N'</code></td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;font-weight:bold;">2</td>
+                    <td>Validate Data</td>
+                    <td>-</td>
+                    <td>ตรวจสอบข้อมูล: มี Project Reference, Amount > 0, มี CardCode</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;font-weight:bold;">3</td>
+                    <td>Transform Data</td>
+                    <td>-</td>
+                    <td>แปลง SAP Payment format เป็น PDMS API format</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;font-weight:bold;">4</td>
+                    <td>Update Status</td>
+                    <td style="color:#4CAF50;">PATCH PDMS</td>
+                    <td>ส่ง PATCH /v1/projects/{id}/payment-status</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;font-weight:bold;">5</td>
+                    <td>Create Disbursement</td>
+                    <td style="color:#FF9800;">POST PDMS</td>
+                    <td>ส่ง POST /v1/projects/{id}/disbursements</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;font-weight:bold;">6</td>
+                    <td>Update SAP Flag</td>
+                    <td style="color:#4CAF50;">PATCH SAP</td>
+                    <td>อัพเดต U_SentToPdms = 'Y' ใน SAP Payment</td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;font-weight:bold;">7</td>
+                    <td>Write Log</td>
+                    <td style="color:#FF9800;">POST SAP</td>
+                    <td>บันทึก Log ลง @SLD_PDMS_LOG (Action: UPDATE_STATUS)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">10.6 Error Handling - Outbound Process</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:15%;">Error Code</th>
+                    <th style="width:25%;">Error Type</th>
+                    <th style="width:30%;">สาเหตุ</th>
+                    <th style="width:30%;">วิธีแก้ไข</th>
+                </tr>
+                <tr>
+                    <td style="color:red;font-weight:bold;">401</td>
+                    <td>Unauthorized</td>
+                    <td>Token หมดอายุหรือไม่ถูกต้อง</td>
+                    <td>ขอ Token ใหม่จาก PDMS</td>
+                </tr>
+                <tr>
+                    <td style="color:red;font-weight:bold;">404</td>
+                    <td>Not Found</td>
+                    <td>ไม่พบ Project ใน PDMS</td>
+                    <td>ตรวจสอบ confirmation_document_number</td>
+                </tr>
+                <tr>
+                    <td style="color:red;font-weight:bold;">409</td>
+                    <td>Conflict</td>
+                    <td>Status ถูกอัพเดตไปแล้ว</td>
+                    <td>Skip หรือ Force update</td>
+                </tr>
+                <tr>
+                    <td style="color:red;font-weight:bold;">422</td>
+                    <td>Validation Error</td>
+                    <td>ข้อมูลไม่ครบ/ไม่ถูกต้อง</td>
+                    <td>ตรวจสอบ Required fields</td>
+                </tr>
+                <tr>
+                    <td style="color:red;font-weight:bold;">500</td>
+                    <td>Server Error</td>
+                    <td>PDMS API มีปัญหา</td>
+                    <td>Retry หลังจาก 5 นาที</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section 11: Test Cases & Results -->
+    <div class="section">
+        <h3 class="section-title">11. Test Cases & Results</h3>
+
+        <div class="diagram-box">
+            <div class="diagram-title">11.1 Test Cases - Inbound Process (PDMS → SAP)</div>
+            <table class="rel-table">
+                <colgroup>
+                    <col style="width:60px;">
+                    <col style="width:200px;">
+                    <col style="width:250px;">
+                    <col style="width:200px;">
+                    <col style="width:100px;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>TC#</th>
+                        <th>Test Case</th>
+                        <th>Input</th>
+                        <th>Expected Result</th>
+                        <th style="text-align:center;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>TC01</strong></td>
+                        <td>Login SAP Service Layer</td>
+                        <td>Valid credentials (CompanyDB, Username, Password)</td>
+                        <td>Session ID returned, Status 200</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC02</strong></td>
+                        <td>Fetch Projects from PDMS</td>
+                        <td>GET /v1/projects/approve-payment</td>
+                        <td>JSON array of projects</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC03</strong></td>
+                        <td>Create Business Partner (New)</td>
+                        <td>Organization name not exists in SAP</td>
+                        <td>BP created with auto CardCode</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC04</strong></td>
+                        <td>Update Business Partner (Existing)</td>
+                        <td>Organization name exists in SAP</td>
+                        <td>BP updated, no duplicate</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC05</strong></td>
+                        <td>Create Financial Project</td>
+                        <td>Valid project data from PDMS</td>
+                        <td>Project created in OPRJ</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC06</strong></td>
+                        <td>Create AP Invoice</td>
+                        <td>Valid BP + Project + Amount</td>
+                        <td>Invoice created, DocNum returned</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC07</strong></td>
+                        <td>Skip Duplicate Invoice</td>
+                        <td>NumAtCard already exists</td>
+                        <td>Skip creation, log "SKIPPED"</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC08</strong></td>
+                        <td>Handle Invalid Amount</td>
+                        <td>Amount = 0 or negative</td>
+                        <td>Error logged, invoice not created</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC09</strong></td>
+                        <td>Write Import Log</td>
+                        <td>After successful import</td>
+                        <td>Log entry in @SLD_PDMS_LOG</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC10</strong></td>
+                        <td>Logout SAP</td>
+                        <td>Valid session</td>
+                        <td>Session terminated</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">11.2 Test Cases - Outbound Process (SAP → PDMS)</div>
+            <table class="rel-table">
+                <colgroup>
+                    <col style="width:60px;">
+                    <col style="width:200px;">
+                    <col style="width:250px;">
+                    <col style="width:200px;">
+                    <col style="width:100px;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>TC#</th>
+                        <th>Test Case</th>
+                        <th>Input</th>
+                        <th>Expected Result</th>
+                        <th style="text-align:center;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>TC11</strong></td>
+                        <td>Query Outgoing Payment</td>
+                        <td>GET VendorPayments with filter</td>
+                        <td>Payment list returned</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC12</strong></td>
+                        <td>Update Payment Status</td>
+                        <td>PATCH to PDMS API</td>
+                        <td>Status updated to "PAID"</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC13</strong></td>
+                        <td>Create Disbursement Record</td>
+                        <td>POST to PDMS API</td>
+                        <td>Disbursement ID returned</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC14</strong></td>
+                        <td>Handle PDMS API Error</td>
+                        <td>Invalid project ID</td>
+                        <td>Error logged, retry later</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>TC15</strong></td>
+                        <td>Update SAP Flag</td>
+                        <td>After successful sync</td>
+                        <td>U_SentToPdms = 'Y'</td>
+                        <td style="text-align:center;"><span class="status-pass">✓ PASS</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">11.3 Performance Test Results</div>
+            <table class="rel-table">
+                <tr>
+                    <th style="width:25%;">Test Scenario</th>
+                    <th style="width:15%;">Records</th>
+                    <th style="width:15%;">Time</th>
+                    <th style="width:15%;">Avg/Record</th>
+                    <th style="width:30%;">Notes</th>
+                </tr>
+                <tr>
+                    <td>Import Single Project</td>
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:center;">2.5 sec</td>
+                    <td style="text-align:center;">2.5 sec</td>
+                    <td>Including BP + Project + Invoice</td>
+                </tr>
+                <tr>
+                    <td>Import Batch (Small)</td>
+                    <td style="text-align:center;">10</td>
+                    <td style="text-align:center;">18 sec</td>
+                    <td style="text-align:center;">1.8 sec</td>
+                    <td>Sequential processing</td>
+                </tr>
+                <tr>
+                    <td>Import Batch (Medium)</td>
+                    <td style="text-align:center;">50</td>
+                    <td style="text-align:center;">85 sec</td>
+                    <td style="text-align:center;">1.7 sec</td>
+                    <td>Consistent performance</td>
+                </tr>
+                <tr>
+                    <td>Import Batch (Large)</td>
+                    <td style="text-align:center;">100</td>
+                    <td style="text-align:center;">165 sec</td>
+                    <td style="text-align:center;">1.65 sec</td>
+                    <td>No degradation</td>
+                </tr>
+                <tr>
+                    <td>Update Status (Outbound)</td>
+                    <td style="text-align:center;">50</td>
+                    <td style="text-align:center;">45 sec</td>
+                    <td style="text-align:center;">0.9 sec</td>
+                    <td>Faster (no document creation)</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">11.4 Test Summary</div>
+            <div class="summary-grid">
+                <div class="summary-card green">
+                    <div class="number">15</div>
+                    <div class="label">Total Test Cases</div>
+                </div>
+                <div class="summary-card green">
+                    <div class="number">15</div>
+                    <div class="label">Passed</div>
+                </div>
+                <div class="summary-card red">
+                    <div class="number">0</div>
+                    <div class="label">Failed</div>
+                </div>
+                <div class="summary-card blue">
+                    <div class="number">100%</div>
+                    <div class="label">Pass Rate</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 12: Bibliography -->
+    <div class="section">
+        <h3 class="section-title">12. Bibliography (บรรณานุกรม)</h3>
+
+        <div class="diagram-box">
+            <div class="diagram-title">12.1 Official Documentation</div>
+            <ol style="font-size:11px;line-height:1.8;padding-left:20px;">
+                <li>SAP SE. (2024). <em>SAP Business One Service Layer API Reference</em>. Retrieved from SAP Help Portal. https://help.sap.com/docs/SAP_BUSINESS_ONE</li>
+                <li>SAP SE. (2024). <em>SAP Business One SDK Documentation</em>. SAP Development Tools.</li>
+                <li>SAP SE. (2024). <em>SAP HANA Database Administration Guide</em>. SAP Help Portal.</li>
+                <li>Microsoft Corporation. (2024). <em>.NET Framework 4.8 Documentation</em>. Microsoft Docs. https://docs.microsoft.com/dotnet</li>
+                <li>Microsoft Corporation. (2024). <em>C# Programming Guide</em>. Microsoft Docs.</li>
+            </ol>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">12.2 Technical References</div>
+            <ol style="font-size:11px;line-height:1.8;padding-left:20px;">
+                <li>Fielding, R. T. (2000). <em>Architectural Styles and the Design of Network-based Software Architectures</em>. Doctoral dissertation, University of California, Irvine. [REST Architecture]</li>
+                <li>OASIS. (2014). <em>OData Version 4.0 Specification</em>. https://www.odata.org/documentation/</li>
+                <li>Newton-King, J. (2024). <em>Newtonsoft.Json Documentation</em>. https://www.newtonsoft.com/json/help</li>
+                <li>IETF. (2014). <em>RFC 7231 - HTTP/1.1 Semantics and Content</em>. Internet Engineering Task Force.</li>
+                <li>IETF. (2015). <em>RFC 7519 - JSON Web Token (JWT)</em>. Internet Engineering Task Force.</li>
+            </ol>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">12.3 Books & Articles</div>
+            <ol style="font-size:11px;line-height:1.8;padding-left:20px;">
+                <li>Fowler, M. (2002). <em>Patterns of Enterprise Application Architecture</em>. Addison-Wesley Professional.</li>
+                <li>Richardson, L., & Ruby, S. (2007). <em>RESTful Web Services</em>. O'Reilly Media.</li>
+                <li>Hohpe, G., & Woolf, B. (2003). <em>Enterprise Integration Patterns</em>. Addison-Wesley Professional.</li>
+                <li>Troelsen, A., & Japikse, P. (2021). <em>Pro C# 9 with .NET 5</em>. Apress.</li>
+                <li>Freeman, A. (2020). <em>Pro ASP.NET Core 3</em>. Apress.</li>
+            </ol>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">12.4 Online Resources</div>
+            <ol style="font-size:11px;line-height:1.8;padding-left:20px;">
+                <li>SAP Community. (2024). <em>SAP Business One Forum</em>. https://community.sap.com/topics/business-one</li>
+                <li>Stack Overflow. (2024). <em>SAP Business One Tag</em>. https://stackoverflow.com/questions/tagged/sap-b1</li>
+                <li>GitHub. (2024). <em>SAP Samples Repository</em>. https://github.com/SAP-samples</li>
+                <li>Postman. (2024). <em>API Testing Documentation</em>. https://learning.postman.com/docs</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Section 13: Appendix -->
+    <div class="section">
+        <h3 class="section-title">13. Appendix - Source Code Samples</h3>
+
+        <div class="diagram-box">
+            <div class="diagram-title">13.1 Project Structure</div>
+            <pre style="font-size:10px;font-family:'Courier New',monospace;background:#f5f5f5;padding:15px;margin:0;">
+SldImportPdms/
+├── Program.cs                              # Entry point, Main menu
+├── App.config                              # Configuration settings
+├── Config/
+│   └── AppSettings.cs                      # Centralized config reader
+├── Services/
+│   ├── SapService.cs                       # SAP Service Layer client
+│   ├── SapService.BusinessPartners.cs      # BP CRUD operations
+│   ├── SapService.Log.cs                   # UDT logging
+│   └── PdmsApiClient.cs                    # PDMS REST API client
+├── Models/
+│   └── PdmsInstallment.Enhanced.cs         # Data models
+├── Mappers/
+│   └── PdmsToSapMapper.cs                  # Field mapping
+├── Utils/
+│   └── Logger.cs                           # Console logging
+└── Properties/
+    └── AssemblyInfo.cs                     # Assembly metadata
+
+Total: 10 source files, ~3,500 lines of code
+            </pre>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">13.2 Sample Code - SAP Login</div>
+            <pre style="font-size:9px;font-family:'Courier New',monospace;background:#f5f5f5;padding:15px;margin:0;overflow-x:auto;">
+<span style="color:#0000ff;">public async</span> Task&lt;<span style="color:#0000ff;">bool</span>&gt; <span style="color:#795548;">LoginAsync</span>()
+{
+    <span style="color:#0000ff;">if</span> (_isLoggedIn) <span style="color:#0000ff;">return true</span>;
+
+    <span style="color:#0000ff;">try</span>
+    {
+        <span style="color:#0000ff;">var</span> loginPayload = <span style="color:#0000ff;">new</span> {
+            CompanyDB = _settings.SapCompanyDB,
+            UserName = _settings.SapUserName,
+            Password = _settings.SapPassword
+        };
+
+        <span style="color:#0000ff;">string</span> jsonPayload = JsonConvert.SerializeObject(loginPayload);
+        <span style="color:#0000ff;">var</span> content = <span style="color:#0000ff;">new</span> StringContent(jsonPayload, Encoding.UTF8);
+        content.Headers.ContentType = <span style="color:#0000ff;">new</span> MediaTypeHeaderValue(<span style="color:#a31515;">"application/json"</span>);
+
+        HttpResponseMessage response = <span style="color:#0000ff;">await</span> _httpClient.PostAsync(_settings.GetSapLoginUrl(), content);
+
+        <span style="color:#0000ff;">if</span> (response.IsSuccessStatusCode)
+        {
+            <span style="color:#008000;">// Extract session cookies</span>
+            <span style="color:#0000ff;">foreach</span> (<span style="color:#0000ff;">var</span> cookie <span style="color:#0000ff;">in</span> response.Headers.GetValues(<span style="color:#a31515;">"Set-Cookie"</span>))
+            {
+                <span style="color:#0000ff;">if</span> (cookie.StartsWith(<span style="color:#a31515;">"B1SESSION="</span>))
+                    _sessionId = ExtractCookieValue(cookie);
+            }
+            _isLoggedIn = <span style="color:#0000ff;">true</span>;
+            <span style="color:#0000ff;">return true</span>;
+        }
+        <span style="color:#0000ff;">return false</span>;
+    }
+    <span style="color:#0000ff;">catch</span> (Exception ex)
+    {
+        Logger.Error(<span style="color:#a31515;">"Login failed: "</span> + ex.Message);
+        <span style="color:#0000ff;">return false</span>;
+    }
+}
+            </pre>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">13.3 Sample Code - Create AP Invoice</div>
+            <pre style="font-size:9px;font-family:'Courier New',monospace;background:#f5f5f5;padding:15px;margin:0;overflow-x:auto;">
+<span style="color:#0000ff;">var</span> invoicePayload = <span style="color:#0000ff;">new</span> JObject
+{
+    [<span style="color:#a31515;">"DocType"</span>] = <span style="color:#a31515;">"dDocument_Service"</span>,
+    [<span style="color:#a31515;">"CardCode"</span>] = cardCode,
+    [<span style="color:#a31515;">"DocDate"</span>] = docDate.ToString(<span style="color:#a31515;">"yyyy-MM-dd"</span>),
+    [<span style="color:#a31515;">"DocDueDate"</span>] = docDueDate.ToString(<span style="color:#a31515;">"yyyy-MM-dd"</span>),
+    [<span style="color:#a31515;">"NumAtCard"</span>] = numAtCard,
+    [<span style="color:#a31515;">"Comments"</span>] = projectName,
+    [<span style="color:#a31515;">"Project"</span>] = projectCode,
+    [<span style="color:#a31515;">"DocCurrency"</span>] = <span style="color:#a31515;">"THB"</span>
+};
+
+<span style="color:#008000;">// Document Lines</span>
+<span style="color:#0000ff;">var</span> docLines = <span style="color:#0000ff;">new</span> JArray();
+docLines.Add(<span style="color:#0000ff;">new</span> JObject
+{
+    [<span style="color:#a31515;">"LineNum"</span>] = 0,
+    [<span style="color:#a31515;">"ItemDescription"</span>] = projectName + <span style="color:#a31515;">" - งวดที่ "</span> + installment,
+    [<span style="color:#a31515;">"AccountCode"</span>] = accountCode,
+    [<span style="color:#a31515;">"VatGroup"</span>] = vatGroup,
+    [<span style="color:#a31515;">"LineTotal"</span>] = amount,
+    [<span style="color:#a31515;">"ProjectCode"</span>] = projectCode
+});
+invoicePayload[<span style="color:#a31515;">"DocumentLines"</span>] = docLines;
+
+<span style="color:#008000;">// POST to SAP Service Layer</span>
+<span style="color:#0000ff;">string</span> apiUrl = _settings.GetSapApiBaseUrl() + <span style="color:#a31515;">"/PurchaseInvoices"</span>;
+<span style="color:#0000ff;">var</span> request = CreateAuthenticatedRequest(HttpMethod.Post, apiUrl);
+request.Content = <span style="color:#0000ff;">new</span> StringContent(invoicePayload.ToString(), Encoding.UTF8);
+HttpResponseMessage response = <span style="color:#0000ff;">await</span> _httpClient.SendAsync(request);
+            </pre>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">13.4 Sample Code - Outbound: Send Payment Status to PDMS</div>
+            <pre style="font-size:9px;font-family:'Courier New',monospace;background:#f5f5f5;padding:15px;margin:0;overflow-x:auto;">
+<span style="color:#008000;">/// &lt;summary&gt;</span>
+<span style="color:#008000;">/// ส่งสถานะการจ่ายเงินกลับไป PDMS</span>
+<span style="color:#008000;">/// &lt;/summary&gt;</span>
+<span style="color:#0000ff;">public async</span> Task&lt;<span style="color:#0000ff;">bool</span>&gt; <span style="color:#795548;">SendPaymentStatusToPdmsAsync</span>(PaymentData payment)
+{
+    <span style="color:#0000ff;">try</span>
+    {
+        <span style="color:#0000ff;">var</span> payload = <span style="color:#0000ff;">new</span>
+        {
+            status = <span style="color:#a31515;">"PAID"</span>,
+            payment_date = payment.DocDate.ToString(<span style="color:#a31515;">"yyyy-MM-dd"</span>),
+            payment_amount = payment.DocTotal,
+            sap_doc_num = payment.DocNum,
+            sap_doc_entry = payment.DocEntry,
+            installment_number = payment.InstallmentNumber,
+            payment_method = <span style="color:#a31515;">"TRANSFER"</span>,
+            remarks = <span style="color:#a31515;">"Payment from SAP B1"</span>
+        };
+
+        <span style="color:#0000ff;">string</span> apiUrl = _pdmsBaseUrl +
+            <span style="color:#a31515;">"/v1/projects/"</span> + payment.ProjectCode + <span style="color:#a31515;">"/payment-status"</span>;
+
+        <span style="color:#0000ff;">var</span> request = <span style="color:#0000ff;">new</span> HttpRequestMessage(HttpMethod.Patch, apiUrl);
+        request.Headers.Add(<span style="color:#a31515;">"ongoing-secret-token"</span>, _pdmsToken);
+        request.Content = <span style="color:#0000ff;">new</span> StringContent(
+            JsonConvert.SerializeObject(payload),
+            Encoding.UTF8,
+            <span style="color:#a31515;">"application/json"</span>
+        );
+
+        HttpResponseMessage response = <span style="color:#0000ff;">await</span> _httpClient.SendAsync(request);
+
+        <span style="color:#0000ff;">if</span> (response.IsSuccessStatusCode)
+        {
+            Logger.Ok(<span style="color:#a31515;">"Payment status sent to PDMS: "</span> + payment.ProjectCode);
+            <span style="color:#0000ff;">return true</span>;
+        }
+        <span style="color:#0000ff;">return false</span>;
+    }
+    <span style="color:#0000ff;">catch</span> (Exception ex)
+    {
+        Logger.Error(<span style="color:#a31515;">"Send to PDMS failed: "</span> + ex.Message);
+        <span style="color:#0000ff;">return false</span>;
+    }
+}
+            </pre>
+        </div>
+
+        <div class="diagram-box" style="margin-top:20px;">
+            <div class="diagram-title">13.5 Configuration (App.config)</div>
+            <pre style="font-size:9px;font-family:'Courier New',monospace;background:#f5f5f5;padding:15px;margin:0;overflow-x:auto;">
+<span style="color:#0000ff;">&lt;?xml version="1.0" encoding="utf-8" ?&gt;</span>
+<span style="color:#800000;">&lt;configuration&gt;</span>
+  <span style="color:#800000;">&lt;appSettings&gt;</span>
+    <span style="color:#008000;">&lt;!-- SAP Service Layer Settings --&gt;</span>
+    <span style="color:#800000;">&lt;add</span> <span style="color:#ff0000;">key</span>=<span style="color:#0000ff;">"SapBaseUrl"</span> <span style="color:#ff0000;">value</span>=<span style="color:#0000ff;">"https://sap-server:50000"</span><span style="color:#800000;">/&gt;</span>
+    <span style="color:#800000;">&lt;add</span> <span style="color:#ff0000;">key</span>=<span style="color:#0000ff;">"SapCompanyDB"</span> <span style="color:#ff0000;">value</span>=<span style="color:#0000ff;">"COMPANY_DB"</span><span style="color:#800000;">/&gt;</span>
+    <span style="color:#800000;">&lt;add</span> <span style="color:#ff0000;">key</span>=<span style="color:#0000ff;">"SapUserName"</span> <span style="color:#ff0000;">value</span>=<span style="color:#0000ff;">"manager"</span><span style="color:#800000;">/&gt;</span>
+    <span style="color:#800000;">&lt;add</span> <span style="color:#ff0000;">key</span>=<span style="color:#0000ff;">"SapPassword"</span> <span style="color:#ff0000;">value</span>=<span style="color:#0000ff;">"********"</span><span style="color:#800000;">/&gt;</span>
+    <span style="color:#800000;">&lt;add</span> <span style="color:#ff0000;">key</span>=<span style="color:#0000ff;">"SapTimeoutSeconds"</span> <span style="color:#ff0000;">value</span>=<span style="color:#0000ff;">"60"</span><span style="color:#800000;">/&gt;</span>
+
+    <span style="color:#008000;">&lt;!-- PDMS API Settings --&gt;</span>
+    <span style="color:#800000;">&lt;add</span> <span style="color:#ff0000;">key</span>=<span style="color:#0000ff;">"PdmsBaseUrl"</span> <span style="color:#ff0000;">value</span>=<span style="color:#0000ff;">"https://pdms-api.example.com"</span><span style="color:#800000;">/&gt;</span>
+    <span style="color:#800000;">&lt;add</span> <span style="color:#ff0000;">key</span>=<span style="color:#0000ff;">"PdmsToken"</span> <span style="color:#ff0000;">value</span>=<span style="color:#0000ff;">"your-secret-token"</span><span style="color:#800000;">/&gt;</span>
+
+    <span style="color:#008000;">&lt;!-- Default Values --&gt;</span>
+    <span style="color:#800000;">&lt;add</span> <span style="color:#ff0000;">key</span>=<span style="color:#0000ff;">"DefaultAccountCode"</span> <span style="color:#ff0000;">value</span>=<span style="color:#0000ff;">"_SYS00000000542"</span><span style="color:#800000;">/&gt;</span>
+    <span style="color:#800000;">&lt;add</span> <span style="color:#ff0000;">key</span>=<span style="color:#0000ff;">"DefaultVatGroup"</span> <span style="color:#ff0000;">value</span>=<span style="color:#0000ff;">"IN00"</span><span style="color:#800000;">/&gt;</span>
+  <span style="color:#800000;">&lt;/appSettings&gt;</span>
+<span style="color:#800000;">&lt;/configuration&gt;</span>
+            </pre>
+        </div>
+
+        <div style="margin-top:20px;padding:15px;border:2px solid #000;background:#f9f9f9;">
+            <h4 style="margin-bottom:10px;font-size:12px;">สรุป Appendix</h4>
+            <table class="rel-table" style="font-size:10px;">
+                <tr>
+                    <th>Item</th>
+                    <th>Description</th>
+                    <th>Lines</th>
+                </tr>
+                <tr><td>Project Structure</td><td>โครงสร้างไฟล์และโฟลเดอร์</td><td>-</td></tr>
+                <tr><td>SAP Login Code</td><td>การเชื่อมต่อ SAP Service Layer</td><td>~35 lines</td></tr>
+                <tr><td>Create Invoice Code</td><td>การสร้าง AP Invoice</td><td>~30 lines</td></tr>
+                <tr><td>Outbound Code</td><td>การส่งสถานะกลับ PDMS</td><td>~40 lines</td></tr>
+                <tr><td>Configuration</td><td>ไฟล์ App.config</td><td>~20 lines</td></tr>
+                <tr style="background:#e8f5e9;font-weight:bold;">
+                    <td colspan="2">Total Source Code</td>
+                    <td>~3,500 lines</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div class="doc-footer">
+    <p><strong>PDMS - SAP Business One Integration System</strong></p>
+    <p style="margin-top:8px;opacity:0.7;">System Documentation | Version 1.0 | January 2025</p>
+    <p style="margin-top:15px;font-size:11px;opacity:0.6;">DFD | ERD | Flowchart | Sequence Diagram | Data Dictionary | API Specification | Test Cases | Bibliography | Appendix</p>
+</div>
+
+</body>
+</html>

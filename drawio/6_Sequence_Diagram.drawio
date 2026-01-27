@@ -1,0 +1,326 @@
+<mxfile host="app.diagrams.net" modified="2025-01-20" agent="Claude" version="21.0.0">
+  <diagram name="Sequence Diagram" id="sequence-diagram">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="Sequence Diagram - PDMS SAP B1 Integration" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1e3a5f;" vertex="1" parent="1">
+          <mxGeometry x="450" y="20" width="500" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Actor: Scheduler -->
+        <mxCell id="actor1" value="Scheduler" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="80" y="80" width="40" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Lifeline: Integration System -->
+        <mxCell id="ll1-head" value="Integration&#xa;System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="200" y="80" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ll1-line" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1;strokeColor=#6c8ebf;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="250" y="130" as="sourcePoint" />
+            <mxPoint x="250" y="1300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Lifeline: PDMS API -->
+        <mxCell id="ll2-head" value="PDMS&#xa;API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="80" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ll2-line" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="450" y="130" as="sourcePoint" />
+            <mxPoint x="450" y="1300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Lifeline: SAP Service Layer -->
+        <mxCell id="ll3-head" value="SAP&#xa;Service Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="600" y="80" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ll3-line" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="650" y="130" as="sourcePoint" />
+            <mxPoint x="650" y="1300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Lifeline: SAP HANA DB -->
+        <mxCell id="ll4-head" value="SAP HANA&#xa;Database" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="800" y="80" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ll4-line" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1;strokeColor=#b85450;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="850" y="130" as="sourcePoint" />
+            <mxPoint x="850" y="1300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Lifeline: Log Table -->
+        <mxCell id="ll5-head" value="@SLD_PDMS&#xa;_LOG" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="80" width="100" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ll5-line" value="" style="endArrow=none;dashed=1;html=1;strokeWidth=1;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1050" y="130" as="sourcePoint" />
+            <mxPoint x="1050" y="1300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Section: Inbound Process -->
+        <mxCell id="section1" value="Inbound Process (PDMS → SAP)" style="text;html=1;strokeColor=none;fillColor=#e8f5e9;align=left;verticalAlign=middle;fontStyle=1;fontSize=12;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="250" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Message 1: Trigger -->
+        <mxCell id="m1" value="1. triggerImport()" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2e7d32;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="210" as="sourcePoint" />
+            <mxPoint x="245" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 2: GET Projects -->
+        <mxCell id="m2" value="2. GET /api/projects?status=approved" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2e7d32;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="255" y="250" as="sourcePoint" />
+            <mxPoint x="445" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 3: Return Projects -->
+        <mxCell id="m3" value="3. JSON: Project[]" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2e7d32;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="445" y="290" as="sourcePoint" />
+            <mxPoint x="255" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Activation Box 1 -->
+        <mxCell id="act1" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="245" y="205" width="15" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Loop: For Each Project -->
+        <mxCell id="loop1" value="loop [for each project]" style="shape=umlFrame;whiteSpace=wrap;html=1;width=120;height=20;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="230" y="320" width="850" height="350" as="geometry" />
+        </mxCell>
+
+        <!-- Message 4: POST BusinessPartners -->
+        <mxCell id="m4" value="4. POST /BusinessPartners" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#1565c0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="360" as="sourcePoint" />
+            <mxPoint x="645" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 5: Return CardCode -->
+        <mxCell id="m5" value="5. { CardCode: 'V00001' }" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#1565c0;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="645" y="400" as="sourcePoint" />
+            <mxPoint x="260" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 6: POST Projects -->
+        <mxCell id="m6" value="6. POST /Projects" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#1565c0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="440" as="sourcePoint" />
+            <mxPoint x="645" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 7: Return ProjectCode -->
+        <mxCell id="m7" value="7. { ProjectCode: 'PRJ001' }" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#1565c0;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="645" y="480" as="sourcePoint" />
+            <mxPoint x="260" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 8: POST PurchaseInvoices -->
+        <mxCell id="m8" value="8. POST /PurchaseInvoices" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#1565c0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="520" as="sourcePoint" />
+            <mxPoint x="645" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 9: Return DocEntry -->
+        <mxCell id="m9" value="9. { DocEntry: 123, DocNum: 'INV001' }" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#1565c0;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="645" y="560" as="sourcePoint" />
+            <mxPoint x="260" y="560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 10: INSERT Log -->
+        <mxCell id="m10" value="10. INSERT INTO @SLD_PDMS_LOG" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="600" as="sourcePoint" />
+            <mxPoint x="1045" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 11: OK -->
+        <mxCell id="m11" value="11. OK" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="640" as="sourcePoint" />
+            <mxPoint x="260" y="640" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Section: Outbound Process -->
+        <mxCell id="section2" value="Outbound Process (SAP → PDMS)" style="text;html=1;strokeColor=none;fillColor=#e3f2fd;align=left;verticalAlign=middle;fontStyle=1;fontSize=12;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="700" width="250" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Message 12: Trigger Payment Check -->
+        <mxCell id="m12" value="12. triggerPaymentCheck()" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#7b1fa2;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="750" as="sourcePoint" />
+            <mxPoint x="245" y="750" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Activation Box 2 -->
+        <mxCell id="act2" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="245" y="745" width="15" height="250" as="geometry" />
+        </mxCell>
+
+        <!-- Message 13: Query Pending -->
+        <mxCell id="m13" value="13. SELECT * FROM @SLD_PDMS_LOG WHERE PaymentStatus IS NULL" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="790" as="sourcePoint" />
+            <mxPoint x="1045" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 14: Return Pending List -->
+        <mxCell id="m14" value="14. PendingInvoice[]" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="830" as="sourcePoint" />
+            <mxPoint x="260" y="830" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Loop: For Each Pending Invoice -->
+        <mxCell id="loop2" value="loop [for each pending invoice]" style="shape=umlFrame;whiteSpace=wrap;html=1;width=160;height=20;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="230" y="860" width="850" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Message 15: GET VendorPayments -->
+        <mxCell id="m15" value="15. GET /VendorPayments?$filter=..." style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d6b656;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="900" as="sourcePoint" />
+            <mxPoint x="645" y="900" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 16: Return Payment -->
+        <mxCell id="m16" value="16. { DocNum: 'PAY001', Amount: 50000 }" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d6b656;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="645" y="940" as="sourcePoint" />
+            <mxPoint x="260" y="940" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Alt: Payment Found -->
+        <mxCell id="alt1" value="alt [payment found]" style="shape=umlFrame;whiteSpace=wrap;html=1;width=100;height=20;fillColor=#e8f5e9;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="250" y="960" width="330" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Message 17: PATCH Status -->
+        <mxCell id="m17" value="17. PATCH /api/invoices/{id}/payment-status" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="1000" as="sourcePoint" />
+            <mxPoint x="445" y="1000" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 18: OK -->
+        <mxCell id="m18" value="18. 200 OK" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="445" y="1030" as="sourcePoint" />
+            <mxPoint x="260" y="1030" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 19: UPDATE Log -->
+        <mxCell id="m19" value="19. UPDATE @SLD_PDMS_LOG SET PaymentStatus = 'PAID'" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="260" y="1090" as="sourcePoint" />
+            <mxPoint x="1045" y="1090" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Message 20: OK -->
+        <mxCell id="m20" value="20. OK" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1045" y="1130" as="sourcePoint" />
+            <mxPoint x="260" y="1130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Legend -->
+        <mxCell id="legend-box" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="80" width="200" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="90" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg1" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2e7d32;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1170" y="130" as="sourcePoint" />
+            <mxPoint x="1210" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg1t" value="PDMS Request" style="text;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="120" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg2" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#1565c0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1170" y="155" as="sourcePoint" />
+            <mxPoint x="1210" y="155" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg2t" value="SAP Request" style="text;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="145" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg3" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1170" y="180" as="sourcePoint" />
+            <mxPoint x="1210" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg3t" value="Database Operation" style="text;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="170" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg4" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#666;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1170" y="205" as="sourcePoint" />
+            <mxPoint x="1210" y="205" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg4t" value="Response" style="text;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="195" width="100" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="leg5" value="" style="shape=umlFrame;whiteSpace=wrap;html=1;width=30;height=10;fillColor=#f5f5f5;strokeColor=#666666;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1170" y="225" width="40" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="leg5t" value="Loop / Alt" style="text;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="220" width="100" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

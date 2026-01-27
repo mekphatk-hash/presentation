@@ -1,0 +1,246 @@
+<mxfile host="app.diagrams.net" modified="2025-01-20" agent="Claude" version="21.0.0">
+  <diagram name="Flowchart Import Process" id="flowchart-import">
+    <mxGraphModel dx="1200" dy="1600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title -->
+        <mxCell id="title" value="Flowchart: Import Process (PDMS → SAP B1)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1;fontColor=#1e3a5f;" vertex="1" parent="1">
+          <mxGeometry x="284" y="20" width="600" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Start -->
+        <mxCell id="start" value="Start" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="520" y="80" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Login SAP -->
+        <mxCell id="p1" value="Login SAP&#xa;Service Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="495" y="160" width="150" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Decision: Login Success -->
+        <mxCell id="d1" value="Login&#xa;Success?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="510" y="240" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Fetch PDMS -->
+        <mxCell id="p2" value="Fetch Projects&#xa;from PDMS API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="495" y="350" width="150" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Decision: Has Data -->
+        <mxCell id="d2" value="Has&#xa;Projects?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="510" y="430" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Loop Start -->
+        <mxCell id="loop" value="For Each Project" style="text;html=1;strokeColor=#666666;fillColor=#f5f5f5;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="495" y="530" width="150" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Check BP Exists -->
+        <mxCell id="d3" value="Business Partner&#xa;Exists?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="510" y="590" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Create BP -->
+        <mxCell id="p3" value="Create Business&#xa;Partner (POST)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="595" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Update BP -->
+        <mxCell id="p4" value="Update Business&#xa;Partner (PATCH)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="320" y="595" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Check Project Exists -->
+        <mxCell id="d4" value="Financial Project&#xa;Exists?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="510" y="700" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Create Project -->
+        <mxCell id="p5" value="Create Financial&#xa;Project (POST)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="705" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Check Invoice Exists -->
+        <mxCell id="d5" value="Invoice Already&#xa;Exists?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="510" y="810" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Skip -->
+        <mxCell id="p6" value="Skip&#xa;(Log: SKIPPED)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="320" y="815" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Create Invoice -->
+        <mxCell id="p7" value="Create AP Invoice&#xa;(POST)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="680" y="815" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Decision: Success -->
+        <mxCell id="d6" value="Create&#xa;Success?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="690" y="900" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Log Success -->
+        <mxCell id="p8" value="Write Log&#xa;(SUCCESS)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="830" y="905" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Log Error -->
+        <mxCell id="p9" value="Write Log&#xa;(ERROR)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="690" y="1010" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- More Projects? -->
+        <mxCell id="d7" value="More&#xa;Projects?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="510" y="1100" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Logout -->
+        <mxCell id="p10" value="Logout SAP&#xa;Service Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="495" y="1210" width="150" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- End -->
+        <mxCell id="end" value="End" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1300" width="100" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Error End -->
+        <mxCell id="errorEnd" value="Error Exit" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="260" y="250" width="80" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- Arrows -->
+        <mxCell id="a1" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="start" target="p1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="p1" target="d1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="Yes" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="d1" target="p2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" value="No" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="d1" target="errorEnd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="p2" target="d2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" value="Yes" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="d2" target="loop">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a7" value="No" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#666;" edge="1" parent="1" source="d2" target="p10">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="770" y="465" />
+              <mxPoint x="770" y="1235" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a8" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="loop" target="d3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a9" value="No" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="d3" target="p3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a10" value="Yes" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="d3" target="p4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a11" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="p3" target="d4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="680" />
+              <mxPoint x="570" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a12" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="p4" target="d4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="680" />
+              <mxPoint x="570" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a13" value="No" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="d4" target="p5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a14" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="p5" target="d5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="790" />
+              <mxPoint x="570" y="790" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a15" value="Yes" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="d4" target="d5">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="735" />
+              <mxPoint x="450" y="845" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a16" value="Yes" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="d5" target="p6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a17" value="No" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="d5" target="p7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a18" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="p7" target="d6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a19" value="Yes" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="d6" target="p8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a20" value="No" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="d6" target="p9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a21" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="p8" target="d7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="890" y="1135" />
+              <mxPoint x="630" y="1135" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a22" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="p9" target="d7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="1080" />
+              <mxPoint x="630" y="1080" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a23" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="p6" target="d7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="390" y="1135" />
+              <mxPoint x="510" y="1135" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a24" value="Yes" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#2e7d32;curved=1;" edge="1" parent="1" source="d7" target="loop">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="250" y="1135" />
+              <mxPoint x="250" y="545" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a25" value="No" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="d7" target="p10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a26" style="endArrow=classic;html=1;strokeWidth=2;" edge="1" parent="1" source="p10" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
