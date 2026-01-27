@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Remote Control - Presentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #F39C12;
+            animation: blink 1.5s infinite;
+        }
+
+        .status.connected .status-dot {
+            background: #27AE60;
+            animation: none;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .slide-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .slide-number {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #DC143C;
+            line-height: 1;
+        }
+
+        .slide-total {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8B0000, #DC143C);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .controls {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .control-btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: none;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-btn.prev {
+            background: linear-gradient(135deg, #2980B9, #3498DB);
+            color: #fff;
+        }
+
+        .control-btn.next {
+            background: linear-gradient(135deg, #8B0000, #DC143C);
+            color: #fff;
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .swipe-hint {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.4);
+            margin-top: 20px;
+        }
+
+        .swipe-hint span {
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Swipe indicator */
+        .swipe-indicator {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 5rem;
+            color: rgba(255,255,255,0.3);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .swipe-indicator.left { left: 20px; }
+        .swipe-indicator.right { right: 20px; }
+        .swipe-indicator.show { opacity: 1; }
+
+        /* Connection screen */
+        .connecting {
+            text-align: center;
+        }
+
+        .connecting h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.2);
+            border-top-color: #DC143C;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #E74C3C;
+            padding: 20px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .retry-btn {
+            margin-top: 15px;
+            padding: 12px 30px;
+            background: #DC143C;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        /* Slide picker */
+        .slide-picker {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 100;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .slide-picker.show { display: block; }
+
+        .slide-picker h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .slide-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .slide-item {
+            aspect-ratio: 16/9;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .slide-item:active {
+            transform: scale(0.95);
+            background: #DC143C;
+        }
+
+        .slide-item.current {
+            background: #DC143C;
+            box-shadow: 0 0 20px rgba(220, 20, 60, 0.5);
+        }
+
+        .close-picker {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContainer" style="display: none;">
+        <h1>Remote Control</h1>
+
+        <div class="status" id="status">
+            <span class="status-dot"></span>
+            <span id="statusText">กำลังเชื่อมต่อ...</span>
+        </div>
+
+        <div class="slide-info" onclick="toggleSlidePicker()">
+            <div class="slide-number" id="slideNumber">-</div>
+            <div class="slide-total">จาก <span id="totalSlides">-</span> สไลด์</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn prev" onclick="sendCommand('prev')" id="prevBtn">
+                ◀
+            </button>
+            <button class="control-btn next" onclick="sendCommand('next')" id="nextBtn">
+                ▶
+            </button>
+        </div>
+
+        <div class="swipe-hint">
+            แตะหมายเลขสไลด์เพื่อเลือกสไลด์
+            <span>หรือ ปัดซ้าย/ขวา เพื่อเปลี่ยนสไลด์</span>
+        </div>
+    </div>
+
+    <div class="connecting" id="connectingScreen">
+        <div class="loader"></div>
+        <h2>กำลังเชื่อมต่อ...</h2>
+        <p id="roomId"></p>
+        <div class="error" id="errorMsg" style="display: none;">
+            <p>ไม่สามารถเชื่อมต่อได้</p>
+            <p style="font-size: 0.85rem; margin-top: 10px;">ตรวจสอบว่า Presentation เปิดอยู่</p>
+            <button class="retry-btn" onclick="connect()">ลองใหม่</button>
+        </div>
+    </div>
+
+    <div class="swipe-indicator left">◀</div>
+    <div class="swipe-indicator right">▶</div>
+
+    <!-- Slide Picker -->
+    <div class="slide-picker" id="slidePicker">
+        <button class="close-picker" onclick="toggleSlidePicker()">&times;</button>
+        <h3>เลือกสไลด์</h3>
+        <div class="slide-grid" id="slideGrid"></div>
+    </div>
+
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script>
+        let peer = null;
+        let conn = null;
+        let currentSlide = 1;
+        let totalSlides = 1;
+
+        // Get room ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomId = urlParams.get('room');
+
+        if (!roomId) {
+            document.getElementById('connectingScreen').innerHTML = `
+                <div class="error">
+                    <p>ไม่พบ Room ID</p>
+                    <p style="font-size: 0.85rem; margin-top: 10px;">กรุณาสแกน QR Code จาก Presentation</p>
+                </div>
+            `;
+        } else {
+            document.getElementById('roomId').textContent = 'Room: ' + roomId;
+            connect();
+        }
+
+        function connect() {
+            document.getElementById('errorMsg').style.display = 'none';
+
+            peer = new Peer();
+
+            peer.on('open', () => {
+                conn = peer.connect(roomId);
+
+                conn.on('open', () => {
+                    document.getElementById('connectingScreen').style.display = 'none';
+                    document.getElementById('mainContainer').style.display = 'block';
+                    document.getElementById('status').classList.add('connected');
+                    document.getElementById('statusText').textContent = 'เชื่อมต่อแล้ว';
+                });
+
+                conn.on('data', (data) => {
+                    if (data.type === 'init' || data.type === 'update') {
+                        currentSlide = data.slide;
+                        totalSlides = data.total;
+                        updateDisplay();
+                    }
+                });
+
+                conn.on('close', () => {
+                    document.getElementById('status').classList.remove('connected');
+                    document.getElementById('statusText').textContent = 'ขาดการเชื่อมต่อ';
+                });
+
+                conn.on('error', (err) => {
+                    console.error('Connection error:', err);
+                });
+            });
+
+            peer.on('error', (err) => {
+                console.error('Peer error:', err);
+                document.getElementById('errorMsg').style.display = 'block';
+            });
+
+            // Timeout for connection
+            setTimeout(() => {
+                if (!conn || !conn.open) {
+                    document.getElementById('errorMsg').style.display = 'block';
+                }
+            }, 10000);
+        }
+
+        function sendCommand(action) {
+            if (conn && conn.open) {
+                conn.send({ action: action });
+
+                // Vibrate feedback
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+
+                // Optimistic update
+                if (action === 'next' && currentSlide < totalSlides) {
+                    currentSlide++;
+                    updateDisplay();
+                } else if (action === 'prev' && currentSlide > 1) {
+                    currentSlide--;
+                    updateDisplay();
+                }
+            }
+        }
+
+        function gotoSlide(n) {
+            if (conn && conn.open) {
+                conn.send({ action: 'goto', slide: n });
+                currentSlide = n;
+                updateDisplay();
+                toggleSlidePicker();
+
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('slideNumber').textContent = currentSlide;
+            document.getElementById('totalSlides').textContent = totalSlides;
+
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentSlide <= 1;
+            document.getElementById('nextBtn').disabled = currentSlide >= totalSlides;
+
+            // Update slide grid if open
+            updateSlideGrid();
+        }
+
+        function toggleSlidePicker() {
+            const picker = document.getElementById('slidePicker');
+            picker.classList.toggle('show');
+
+            if (picker.classList.contains('show')) {
+                generateSlideGrid();
+            }
+        }
+
+        function generateSlideGrid() {
+            const grid = document.getElementById('slideGrid');
+            grid.innerHTML = '';
+
+            for (let i = 1; i <= totalSlides; i++) {
+                const item = document.createElement('div');
+                item.className = 'slide-item' + (i === currentSlide ? ' current' : '');
+                item.textContent = i;
+                item.onclick = () => gotoSlide(i);
+                grid.appendChild(item);
+            }
+        }
+
+        function updateSlideGrid() {
+            const items = document.querySelectorAll('.slide-item');
+            items.forEach((item, index) => {
+                item.classList.toggle('current', index + 1 === currentSlide);
+            });
+        }
+
+        // Swipe detection
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+
+        document.addEventListener('touchmove', (e) => {
+            const diff = e.changedTouches[0].screenX - touchStartX;
+            if (diff > 50) {
+                document.querySelector('.swipe-indicator.left').classList.add('show');
+                document.querySelector('.swipe-indicator.right').classList.remove('show');
+            } else if (diff < -50) {
+                document.querySelector('.swipe-indicator.right').classList.add('show');
+                document.querySelector('.swipe-indicator.left').classList.remove('show');
+            } else {
+                document.querySelectorAll('.swipe-indicator').forEach(el => el.classList.remove('show'));
+            }
+        }, false);
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            document.querySelectorAll('.swipe-indicator').forEach(el => el.classList.remove('show'));
+        }, false);
+
+        function handleSwipe() {
+            const diff = touchEndX - touchStartX;
+            const threshold = 80;
+
+            if (diff > threshold) {
+                sendCommand('prev');
+            } else if (diff < -threshold) {
+                sendCommand('next');
+            }
+        }
+
+        // Prevent zoom on double tap
+        document.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2417 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบโอนถ่ายข้อมูลธุรกรรมการเงินแบบอัตโนมัติบน SAP Business One</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background: #1a1a2e;
+            color: #333;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            background: #fff;
+            flex-direction: column;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        /* Color Theme - Red Professional */
+        :root {
+            --primary: #8B0000;
+            --primary-dark: #5C0000;
+            --accent: #B22222;
+            --accent-light: #DC143C;
+            --bg-light: #FFF8F8;
+            --bg-gray: #F5F5F5;
+            --text-dark: #2C2C2C;
+            --text-light: #FFFFFF;
+            --border-color: #E0E0E0;
+        }
+
+        /* ============ Subtle Animations ============ */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Slide transition animation */
+        .slide.active {
+            display: flex;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .slide.active .slide-header {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        .slide.active .slide-header h2 {
+            animation: slideInLeft 0.7s ease-out 0.1s backwards;
+        }
+
+        /* Content animations */
+        .slide.active .content-box,
+        .slide.active .grid-card,
+        .slide.active .benefit-card,
+        .slide.active .tool-card,
+        .slide.active .objective-item,
+        .slide.active .agenda-item,
+        .slide.active .profile-card,
+        .slide.active .wf-summary-box {
+            animation: slideInUp 0.6s ease-out backwards;
+        }
+
+        /* Stagger animation delays for cards */
+        .slide.active .agenda-item:nth-child(1),
+        .slide.active .grid-card:nth-child(1),
+        .slide.active .benefit-card:nth-child(1),
+        .slide.active .tool-card:nth-child(1) { animation-delay: 0.1s; }
+
+        .slide.active .agenda-item:nth-child(2),
+        .slide.active .grid-card:nth-child(2),
+        .slide.active .benefit-card:nth-child(2),
+        .slide.active .tool-card:nth-child(2) { animation-delay: 0.15s; }
+
+        .slide.active .agenda-item:nth-child(3),
+        .slide.active .grid-card:nth-child(3),
+        .slide.active .benefit-card:nth-child(3),
+        .slide.active .tool-card:nth-child(3) { animation-delay: 0.2s; }
+
+        .slide.active .agenda-item:nth-child(4),
+        .slide.active .grid-card:nth-child(4),
+        .slide.active .benefit-card:nth-child(4),
+        .slide.active .tool-card:nth-child(4) { animation-delay: 0.25s; }
+
+        .slide.active .agenda-item:nth-child(5),
+        .slide.active .benefit-card:nth-child(5),
+        .slide.active .tool-card:nth-child(5) { animation-delay: 0.3s; }
+
+        .slide.active .agenda-item:nth-child(6),
+        .slide.active .benefit-card:nth-child(6),
+        .slide.active .tool-card:nth-child(6) { animation-delay: 0.35s; }
+
+        .slide.active .tool-card:nth-child(7) { animation-delay: 0.4s; }
+        .slide.active .tool-card:nth-child(8) { animation-delay: 0.45s; }
+
+        /* Objective items stagger */
+        .slide.active .objective-item:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .objective-item:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .objective-item:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .objective-item:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Workflow rows animation */
+        .slide.active .workflow-row {
+            animation: slideInUp 0.6s ease-out backwards;
+        }
+        .slide.active .workflow-row:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .workflow-row:nth-child(2) { animation-delay: 0.25s; }
+
+        /* Table animation */
+        .slide.active .data-table,
+        .slide.active .timeline-table,
+        .slide.active .info-table {
+            animation: scaleIn 0.6s ease-out 0.2s backwards;
+        }
+
+        /* Diagram animation */
+        .slide.active .diagram-frame {
+            animation: scaleIn 0.7s ease-out 0.2s backwards;
+        }
+
+        /* Stats cards animation */
+        .slide.active .stat-card {
+            animation: scaleIn 0.5s ease-out backwards;
+        }
+        .slide.active .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .slide.active .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .slide.active .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .slide.active .stat-card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Title slide animations */
+        .slide-title.active .left-section {
+            animation: slideInLeft 0.7s ease-out;
+        }
+        .slide-title.active .right-section {
+            animation: slideInRight 0.7s ease-out;
+        }
+        .slide-title.active .circle-frame {
+            animation: scaleIn 0.8s ease-out 0.3s backwards;
+        }
+
+        /* Q&A and Thank You special animations */
+        .slide-qa.active h2 {
+            animation: scaleIn 0.8s ease-out;
+        }
+        .slide-thanks.active .left {
+            animation: slideInLeft 0.7s ease-out;
+        }
+        .slide-thanks.active .right {
+            animation: slideInRight 0.7s ease-out;
+        }
+
+        /* ============ Common Header ============ */
+        .slide-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            padding: 35px 60px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(139, 0, 0, 0.3);
+        }
+
+        .slide-header h2 {
+            font-size: 2.8rem;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .slide-header::after {
+            content: '';
+            position: absolute;
+            right: 80px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 80px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        /* ============ SLIDE 1: Title ============ */
+        .slide-title {
+            flex-direction: row !important;
+            background: var(--bg-light);
+        }
+
+        .slide-title .left-section {
+            width: 55%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 50px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide-title .left-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 600px;
+            height: 600px;
+            border: 2px solid rgba(255,255,255,0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .slide-title .logos {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .slide-title .logos img {
+            height: 70px;
+            object-fit: contain;
+            filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .slide-title h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-light);
+            line-height: 1.2;
+            margin-bottom: 20px;
+            text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .slide-title h2 {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 35px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .slide-title .presenter {
+            color: var(--text-light);
+            border-top: 2px solid rgba(255,255,255,0.3);
+            padding-top: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .slide-title .presenter h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .slide-title .presenter .name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .slide-title .presenter .details {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+
+        .slide-title .presenter .details span {
+            display: block;
+        }
+
+        .slide-title .right-section {
+            width: 45%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: linear-gradient(180deg, #f8f8f8 0%, #eaeaea 100%);
+            overflow: hidden;
+        }
+
+        .slide-title .right-section::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 120px;
+            height: 120px;
+            border: 3px solid rgba(139, 0, 0, 0.1);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .slide-title .right-section::after {
+            content: '';
+            position: absolute;
+            bottom: 15%;
+            right: 8%;
+            width: 80px;
+            height: 80px;
+            border: 3px solid rgba(139, 0, 0, 0.12);
+            border-radius: 50%;
+            animation: pulse 4s ease-in-out infinite 1s;
+        }
+
+        .slide-title .circle-frame {
+            width: 420px;
+            height: 420px;
+            border-radius: 50%;
+            border: 8px solid var(--accent);
+            overflow: hidden;
+            box-shadow:
+                0 30px 80px rgba(139, 0, 0, 0.25),
+                0 0 0 15px rgba(139, 0, 0, 0.08),
+                0 0 0 30px rgba(139, 0, 0, 0.04);
+            position: relative;
+            z-index: 2;
+            transition: all 0.5s ease;
+        }
+
+        .slide-title .circle-frame:hover {
+            box-shadow:
+                0 35px 90px rgba(139, 0, 0, 0.35),
+                0 0 0 18px rgba(139, 0, 0, 0.12),
+                0 0 0 35px rgba(139, 0, 0, 0.06);
+        }
+
+        .slide-title .circle-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .slide-title .circle-frame:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .slide-title h1 { font-size: 2.5rem; }
+            .slide-title .circle-frame { width: 350px; height: 350px; }
+        }
+
+        @media (max-width: 1200px) {
+            .slide-title { flex-direction: column !important; }
+            .slide-title .left-section, .slide-title .right-section { width: 100%; }
+            .slide-title .left-section { padding: 40px; }
+            .slide-title .right-section { padding: 40px; }
+            .slide-title .circle-frame { width: 280px; height: 280px; }
+        }
+
+        /* ============ SLIDE: Agenda ============ */
+        .agenda-grid {
+            flex: 1;
+            padding: 50px 80px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            background: var(--bg-light);
+        }
+
+        .agenda-item {
+            background: #fff;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .agenda-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.15);
+        }
+
+        .agenda-item .number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent);
+            opacity: 0.3;
+            margin-bottom: 10px;
+        }
+
+        .agenda-item h3 {
+            font-size: 1.4rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* ============ SLIDE: Profile Cards ============ */
+        .profile-section {
+            flex: 1;
+            padding: 50px 100px;
+            display: flex;
+            gap: 60px;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-light);
+        }
+
+        .profile-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 50px 60px;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            flex: 1;
+            max-width: 450px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 60px rgba(139, 0, 0, 0.15);
+        }
+
+        .profile-card .photo {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            border: 5px solid var(--accent);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.2);
+        }
+
+        .profile-card .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-card h3 {
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .profile-card p {
+            font-size: 1.2rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .profile-card .role {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            padding: 8px 25px;
+            border-radius: 20px;
+            font-size: 1rem;
+            margin-top: 15px;
+        }
+
+        /* ============ SLIDE: About Me ============ */
+        .about-section {
+            flex: 1;
+            padding: 50px 80px;
+            display: flex;
+            gap: 60px;
+            background: var(--bg-light);
+        }
+
+        .about-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .about-right {
+            flex: 1.5;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .info-table {
+            width: 100%;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .info-table tr {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .info-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .info-table th {
+            background: var(--primary);
+            color: #fff;
+            padding: 18px 25px;
+            text-align: left;
+            font-weight: 600;
+            width: 200px;
+            font-size: 1.1rem;
+        }
+
+        .info-table td {
+            padding: 18px 25px;
+            font-size: 1.15rem;
+            color: var(--text-dark);
+        }
+
+        /* ============ SLIDE: Content Boxes ============ */
+        .content-section {
+            flex: 1;
+            padding: 25px 60px;
+            background: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        .content-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px 30px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .content-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.1);
+        }
+
+        .content-box h3 {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            padding: 8px 22px;
+            border-radius: 20px;
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .content-box ul {
+            list-style: none;
+        }
+
+        .content-box ul li {
+            padding: 6px 0;
+            font-size: 1.05rem;
+            color: var(--text-dark);
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.4;
+        }
+
+        .content-box ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* ============ SLIDE: Table ============ */
+        .table-section {
+            flex: 1;
+            padding: 40px 80px;
+            background: var(--bg-light);
+            display: flex;
+            align-items: center;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            font-size: 1.15rem;
+        }
+
+        .data-table thead th {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            padding: 20px 25px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .data-table tbody td {
+            padding: 18px 25px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background: #FAFAFA;
+        }
+
+        .text-danger {
+            color: #C0392B;
+            font-weight: 500;
+        }
+
+        .text-success {
+            color: #27AE60;
+            font-weight: 600;
+        }
+
+        /* ============ SLIDE: Objectives ============ */
+        .objectives-section {
+            flex: 1;
+            padding: 40px 80px;
+            background: var(--bg-light);
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            padding: 25px 35px;
+            background: #fff;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .objective-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 30px rgba(139, 0, 0, 0.1);
+        }
+
+        .objective-item .num {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .objective-item p {
+            font-size: 1.25rem;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        /* ============ SLIDE: Grid Cards ============ */
+        .grid-section {
+            flex: 1;
+            padding: 40px 80px;
+            background: var(--bg-light);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .card-grid.cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .card-grid.cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .grid-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            border-top: 4px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .grid-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.12);
+        }
+
+        .grid-card h4 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .grid-card p {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* ============ SLIDE: Tools ============ */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+        }
+
+        .tool-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.15);
+        }
+
+        .tool-card .icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .tool-card h4 {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .tool-card p {
+            font-size: 0.95rem;
+            color: #888;
+        }
+
+        /* ============ SLIDE: Architecture ============ */
+        .arch-section {
+            flex: 1;
+            padding: 40px 80px;
+            background: var(--bg-light);
+            display: flex;
+            gap: 40px;
+        }
+
+        .arch-diagram {
+            flex: 2;
+            background: #fff;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .arch-diagram img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .arch-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .arch-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        }
+
+        .arch-box h4 {
+            color: var(--primary);
+            font-size: 1.15rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
+            font-weight: 700;
+        }
+
+        .arch-box ul {
+            list-style: none;
+        }
+
+        .arch-box ul li {
+            padding: 8px 0;
+            font-size: 1.05rem;
+            color: #555;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .arch-box ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        /* ============ SLIDE: Workflow Overview ============ */
+        .workflow-section {
+            flex: 1;
+            padding: 20px 40px;
+            background: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .workflow-row {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .workflow-row.inbound { border-left: 5px solid #27AE60; }
+        .workflow-row.outbound { border-left: 5px solid #3498DB; }
+
+        .wf-system {
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            color: #fff;
+            font-weight: 600;
+            min-width: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .wf-system:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .wf-system.pdms { background: linear-gradient(135deg, #E74C3C, #C0392B); }
+        .wf-system.middleware { background: linear-gradient(135deg, #8E44AD, #9B59B6); }
+        .wf-system.sap { background: linear-gradient(135deg, #2980B9, #3498DB); }
+
+        .wf-system small {
+            display: block;
+            font-size: 0.7rem;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
+        .wf-arrow {
+            color: var(--accent);
+            font-size: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .wf-arrow small {
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .wf-result {
+            background: #fff;
+            border: 2px dashed var(--accent);
+            border-radius: 10px;
+            padding: 12px 18px;
+        }
+
+        .wf-result h5 {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .wf-result ul {
+            list-style: none;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        .wf-result ul li::before {
+            content: '✓ ';
+            color: #27AE60;
+            font-weight: bold;
+        }
+
+        .workflow-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .wf-summary-box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px 22px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .wf-summary-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(139, 0, 0, 0.1);
+        }
+
+        .wf-summary-box h4 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent);
+            font-weight: 700;
+        }
+
+        .wf-summary-box ul {
+            list-style: none;
+        }
+
+        .wf-summary-box ul li {
+            padding: 5px 0;
+            font-size: 0.9rem;
+            color: #555;
+            padding-left: 18px;
+            position: relative;
+        }
+
+        .wf-summary-box ul li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        /* Responsive for Workflow */
+        @media (max-width: 1400px) {
+            .workflow-row { gap: 15px; padding: 15px 20px; }
+            .wf-system { padding: 12px 20px; min-width: 100px; font-size: 0.9rem; }
+            .wf-arrow { font-size: 1.2rem; }
+            .wf-result { padding: 10px 14px; }
+            .wf-result h5 { font-size: 0.8rem; }
+            .wf-result ul { font-size: 0.75rem; }
+        }
+
+        @media (max-width: 1200px) {
+            .workflow-section { padding: 15px 30px; gap: 15px; }
+            .workflow-row {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .wf-system { min-width: 90px; padding: 10px 15px; }
+            .workflow-summary { grid-template-columns: 1fr 1fr; gap: 15px; }
+        }
+
+        @media (max-width: 900px) {
+            .workflow-summary { grid-template-columns: 1fr; }
+        }
+
+        /* ============ SLIDE: Diagram Full ============ */
+        .diagram-section {
+            flex: 1;
+            padding: 30px 60px;
+            background: var(--bg-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .diagram-frame {
+            flex: 1;
+            background: #fff;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .diagram-frame img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .diagram-caption {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* ============ SLIDE: Benefits ============ */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .benefit-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            border-top: 4px solid var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.12);
+        }
+
+        .benefit-card .number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            opacity: 0.25;
+            margin-bottom: 10px;
+        }
+
+        .benefit-card h4 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .benefit-card p {
+            font-size: 1.05rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* ============ SLIDE: Results ============ */
+        .results-section {
+            flex: 1;
+            padding: 40px 80px;
+            background: var(--bg-light);
+            display: flex;
+            gap: 40px;
+        }
+
+        .stats-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 15px;
+            padding: 35px;
+            color: #fff;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(139, 0, 0, 0.3);
+        }
+
+        .stat-card .value {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .stat-card .label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+
+        .chart-area {
+            flex: 1;
+            background: #fff;
+            border-radius: 15px;
+            padding: 35px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+        }
+
+        .chart-area h3 {
+            color: var(--primary);
+            margin-bottom: 30px;
+            font-size: 1.3rem;
+        }
+
+        .bar-chart {
+            margin-bottom: 25px;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .bar-track {
+            background: #E0E0E0;
+            border-radius: 8px;
+            height: 25px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        .bar-fill.danger {
+            background: linear-gradient(90deg, #C0392B, #E74C3C);
+        }
+
+        .bar-fill.success {
+            background: linear-gradient(90deg, #27AE60, #2ECC71);
+        }
+
+        .bar-fill.primary {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        /* ============ SLIDE: Timeline ============ */
+        .timeline-section {
+            flex: 1;
+            padding: 30px 60px;
+            background: var(--bg-light);
+        }
+
+        .timeline-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+        }
+
+        .timeline-table th {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            padding: 18px 20px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .timeline-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 1rem;
+        }
+
+        .timeline-bar {
+            height: 20px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            border-radius: 10px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .status-badge.done { background: #27AE60; }
+        .status-badge.progress { background: #3498DB; }
+        .status-badge.waiting { background: #F39C12; }
+        .status-badge.pending { background: #95A5A6; }
+
+        .timeline-legend {
+            margin-top: 25px;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .legend-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+        }
+
+        /* ============ SLIDE: Summary ============ */
+        .summary-section {
+            flex: 1;
+            padding: 40px 80px;
+            background: var(--bg-light);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        .summary-box {
+            background: #fff;
+            border-radius: 15px;
+            padding: 35px 40px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.08);
+        }
+
+        .summary-box h3 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--accent);
+            font-weight: 700;
+        }
+
+        .summary-box ul {
+            list-style: none;
+        }
+
+        .summary-box ul li {
+            padding: 12px 0;
+            font-size: 1.1rem;
+            color: #444;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            line-height: 1.5;
+        }
+
+        .summary-box ul li::before {
+            content: '✓';
+            color: #27AE60;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* ============ SLIDE: Q&A ============ */
+        .slide-qa {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .slide-qa h2 {
+            font-size: 6rem;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .slide-qa p {
+            font-size: 2rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* ============ SLIDE: Thank You ============ */
+        .slide-thanks {
+            flex-direction: row !important;
+        }
+
+        .slide-thanks .left {
+            width: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-thanks .circle-frame {
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            border: 6px solid var(--accent-light);
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .slide-thanks .circle-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-thanks .right {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-light);
+        }
+
+        .slide-thanks h2 {
+            font-size: 5rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.1;
+        }
+
+        .slide-thanks .contact {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .slide-thanks .contact p {
+            font-size: 1.3rem;
+            color: #666;
+            margin: 8px 0;
+        }
+
+        /* ============ Navigation ============ */
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 35px;
+            right: 40px;
+            background: var(--primary);
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+
+        <!-- SLIDE 1: Title -->
+        <div class="slide slide-title active" data-slide="1">
+            <div class="left-section">
+                <div class="logos">
+                    <img src="png/SLD_Logo_PNG_320x132.png" alt="SLD">
+                    <img src="png/sapb1.png" alt="SAP">
+                    <img src="png/1499140516_LOGO-ENG-233x300-1.png" alt="KSU">
+                </div>
+                <h1>AUTOMATED FINANCIAL<br>TRANSACTION DATA<br>TRANSFER SYSTEM ON<br>SAP BUSINESS ONE</h1>
+                <h2>ระบบโอนถ่ายข้อมูลธุรกรรมการเงินแบบอัตโนมัติ<br>บนระบบเอสเอพี บิสซิเนส วัน</h2>
+                <div class="presenter">
+                    <h3>Presented By:</h3>
+                    <p class="name">นายเมฆพัฒ การจักร์</p>
+                    <div class="details">
+                        <span>สาขาคอมพิวเตอร์ธุรกิจ คณะบริหารศาสตร์ มหาวิทยาลัยกาฬสินธุ์</span>
+                        <span>นักศึกษาฝึกงาน ณ Sala Daeng Company Limited</span>
+                    </div>
+                </div>
+            </div>
+            <div class="right-section">
+                <div class="circle-frame">
+                    <img src="png/IMG_5990.jpg" alt="Presenter">
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Agenda -->
+        <div class="slide" data-slide="2">
+            <div class="slide-header">
+                <h2>สารบัญ (Agenda)</h2>
+            </div>
+            <div class="agenda-grid">
+                <div class="agenda-item">
+                    <div class="number">01</div>
+                    <h3>บทนำและที่มาของปัญหา</h3>
+                </div>
+                <div class="agenda-item">
+                    <div class="number">02</div>
+                    <h3>วัตถุประสงค์และขอบเขต</h3>
+                </div>
+                <div class="agenda-item">
+                    <div class="number">03</div>
+                    <h3>ระบบที่เกี่ยวข้องและภาพรวมการดำเนินงาน</h3>
+                </div>
+                <div class="agenda-item">
+                    <div class="number">04</div>
+                    <h3>เครื่องมือและสถาปัตยกรรม</h3>
+                </div>
+                <div class="agenda-item">
+                    <div class="number">05</div>
+                    <h3>ประโยชน์และผลการดำเนินงาน</h3>
+                </div>
+                <div class="agenda-item">
+                    <div class="number">06</div>
+                    <h3>ระยะเวลาและสรุป</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: About Me -->
+        <div class="slide" data-slide="3">
+            <div class="slide-header">
+                <h2>เกี่ยวกับผู้จัดทำ</h2>
+            </div>
+            <div class="about-section">
+                <div class="about-left">
+                    <div class="profile-card">
+                        <div class="photo">
+                            <img src="png/IMG_5990.jpg" alt="Profile">
+                        </div>
+                        <h3>นายเมฆพัฒ การจักร์</h3>
+                        <span class="role">Software Engineer Intern</span>
+                    </div>
+                </div>
+                <div class="about-right">
+                    <table class="info-table">
+                        <tr>
+                            <th>สถานศึกษา</th>
+                            <td>คณะบริหารศาสตร์ สาขาคอมพิวเตอร์ธุรกิจ<br>มหาวิทยาลัยกาฬสินธุ์</td>
+                        </tr>
+                        <tr>
+                            <th>ระดับการศึกษา</th>
+                            <td>ปริญญาตรี 2 ปี (เทียบโอน) ชั้นปีที่ 4<br>ห้อง BC6721</td>
+                        </tr>
+                        <tr>
+                            <th>ตำแหน่งฝึกงาน</th>
+                            <td>Software Engineer<br>แผนก Technical Services</td>
+                        </tr>
+                        <tr>
+                            <th>สถานประกอบการ</th>
+                            <td>บริษัท เอสแอลดี โซลูชั่น จำกัด</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Advisors -->
+        <div class="slide" data-slide="4">
+            <div class="slide-header">
+                <h2>อาจารย์ที่ปรึกษาและที่ปรึกษาในสถานประกอบการ</h2>
+            </div>
+            <div class="profile-section">
+                <div class="profile-card">
+                    <div class="photo">
+                        <img src="png/35-1024x1024.png" alt="อาจารย์จุมผล">
+                    </div>
+                    <h3>อาจารย์จุมผล ทองจำรูญ</h3>
+                    <p>อาจารย์ที่ปรึกษาโครงการ</p>
+                    <span class="role">มหาวิทยาลัยกาฬสินธุ์</span>
+                </div>
+                <div class="profile-card">
+                    <div class="photo">
+                        <img src="png/14__3_1.jpg" alt="คุณไชยา" style="object-position: top;">
+                    </div>
+                    <h3>คุณไชยา นามศักดิ์</h3>
+                    <p>หัวหน้าแผนก Technical Services</p>
+                    <span class="role">ที่ปรึกษาในสถานประกอบการ</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Introduction -->
+        <div class="slide" data-slide="5">
+            <div class="slide-header">
+                <h2>บทนำ</h2>
+            </div>
+            <div class="content-section">
+                <div class="content-box">
+                    <h3>การแนะนำหัวข้อวิจัย</h3>
+                    <ul>
+                        <li>ธุรกรรมทางการเงินในปัจจุบันเปลี่ยนจากการใช้เอกสารกระดาษมาเป็นระบบอิเล็กทรอนิกส์</li>
+                        <li>การจัดการโครงการผ่านระบบ PDMS และ SAP Business One</li>
+                        <li>ต้องการเชื่อมต่อข้อมูลระหว่าง 2 ระบบให้อัตโนมัติ</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>ความสำคัญของการวิจัย</h3>
+                    <ul>
+                        <li>การวิจัยนี้มุ่งพัฒนาระบบเชื่อมต่อ PDMS กับ SAP Business One</li>
+                        <li>เพื่อนำเข้าข้อมูลโครงการ, Business Partner และ AP Invoice อัตโนมัติ</li>
+                        <li>พร้อมส่งข้อมูลการเบิกจ่ายกลับไป PDMS เมื่อโอนเงินแล้ว</li>
+                    </ul>
+                </div>
+                <div class="content-box">
+                    <h3>เหตุผลในการเลือกทำวิจัย</h3>
+                    <ul>
+                        <li>กระบวนการนำเข้าข้อมูลแบบเดิมใช้เวลานานและมีต้นทุนสูง</li>
+                        <li>มีความเสี่ยงต่อข้อผิดพลาดจากการกรอกข้อมูลด้วยมือ</li>
+                        <li>ต้องกรอกข้อมูลซ้ำซ้อนทุกครั้งในระบบ SAP</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Problem -->
+        <div class="slide" data-slide="6">
+            <div class="slide-header">
+                <h2>ที่มาและความสำคัญของปัญหา</h2>
+            </div>
+            <div class="table-section">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">ปัญหา</th>
+                            <th style="width: 40%;">ก่อนพัฒนา (Manual)</th>
+                            <th style="width: 40%;">หลังพัฒนา (Auto)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>วิธีการทำงาน</strong></td>
+                            <td class="text-danger">Key ข้อมูลด้วยมือ</td>
+                            <td class="text-success">ระบบ Import/Export อัตโนมัติ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>เวลาที่ใช้</strong></td>
+                            <td class="text-danger">2-3 ชั่วโมง/วัน</td>
+                            <td class="text-success">5 นาที/วัน (ลด 95%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ข้อผิดพลาด</strong></td>
+                            <td class="text-danger">บ่อย (พิมพ์ผิด)</td>
+                            <td class="text-success">ไม่มี (ลด 100%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ข้อมูล 2 ระบบ</strong></td>
+                            <td class="text-danger">ไม่ตรงกัน</td>
+                            <td class="text-success">Sync ตรงกัน Real-time</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Log ตรวจสอบ</strong></td>
+                            <td class="text-danger">ไม่มี</td>
+                            <td class="text-success">มีทุกรายการใน UDT</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ภาระงานพนักงาน</strong></td>
+                            <td class="text-danger">สูง (ทำซ้ำทุกวัน)</td>
+                            <td class="text-success">ต่ำ (อัตโนมัติ)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Objectives -->
+        <div class="slide" data-slide="7">
+            <div class="slide-header">
+                <h2>วัตถุประสงค์</h2>
+            </div>
+            <div class="objectives-section">
+                <div class="objective-item">
+                    <div class="num">1</div>
+                    <p>เพื่อพัฒนาระบบตัวกลาง (Middleware) เชื่อมต่อข้อมูลระหว่าง PDMS และ SAP Business One ผ่าน Service Layer API</p>
+                </div>
+                <div class="objective-item">
+                    <div class="num">2</div>
+                    <p>เพื่อลดขั้นตอนการบันทึกข้อมูลซ้ำซ้อนด้วยมือ (Manual Re-entry) และลดความผิดพลาดในการทำงาน</p>
+                </div>
+                <div class="objective-item">
+                    <div class="num">3</div>
+                    <p>เพื่อสร้างระบบซิงค์สถานะการชำระเงินสองทิศทาง (Two-Way Sync) ให้ข้อมูลถูกต้องและเป็นปัจจุบัน</p>
+                </div>
+                <div class="objective-item">
+                    <div class="num">4</div>
+                    <p>เพื่อศึกษาและประยุกต์ใช้เทคโนโลยี RESTful API ในการพัฒนาระบบระดับองค์กร</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Scope -->
+        <div class="slide" data-slide="8">
+            <div class="slide-header">
+                <h2>ขอบเขตงานวิจัย</h2>
+            </div>
+            <div class="grid-section">
+                <div class="card-grid">
+                    <div class="grid-card">
+                        <h4>ด้านข้อมูลนำเข้า (Inbound)</h4>
+                        <p>นำเข้าข้อมูลใบแจ้งหนี้จาก PDMS มาสร้าง A/P Invoice ใน SAP Business One โดยอัตโนมัติ</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4>ด้านข้อมูลส่งออก (Outbound)</h4>
+                        <p>ส่งสถานะการชำระเงินจาก SAP Business One กลับไปอัปเดตใน PDMS ด้วยปุ่ม Add-on ในหน้า Outgoing Payment</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4>ด้านการจัดการระบบ</h4>
+                        <p>ทำงานแบบ Background Service ตามรอบเวลาที่กำหนด และบันทึกประวัติการทำงานลงใน UDT</p>
+                    </div>
+                    <div class="grid-card">
+                        <h4>ด้านความปลอดภัย</h4>
+                        <p>ใช้ DPAPI เข้ารหัสข้อมูล Credentials และ TLS 1.2 สำหรับการสื่อสารผ่าน API</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: System Introduction -->
+        <div class="slide" data-slide="9">
+            <div class="slide-header">
+                <h2>ระบบที่เกี่ยวข้อง</h2>
+            </div>
+            <div class="grid-section">
+                <div class="card-grid">
+                    <div class="grid-card" style="border-top: 4px solid #E74C3C;">
+                        <h4 style="color: #E74C3C;">PDMS (Project Data Management System)</h4>
+                        <p><strong>ระบบจัดการข้อมูลโครงการ</strong> ใช้บริหารจัดการโครงการก่อสร้าง เก็บข้อมูลใบแจ้งหนี้ ผู้รับเหมา และการเบิกจ่ายเงิน</p>
+                        <ul style="margin-top: 10px; font-size: 0.95rem; color: #666;">
+                            <li>• ข้อมูลโครงการ (Project)</li>
+                            <li>• ข้อมูลผู้รับเหมา (Vendor)</li>
+                            <li>• ใบแจ้งหนี้ (Invoice)</li>
+                        </ul>
+                    </div>
+                    <div class="grid-card" style="border-top: 4px solid #3498DB;">
+                        <h4 style="color: #3498DB;">SAP Business One</h4>
+                        <p><strong>ระบบ ERP บัญชีและการเงิน</strong> ใช้บันทึกบัญชี จัดการเจ้าหนี้-ลูกหนี้ และทำจ่ายเงินให้ผู้รับเหมา</p>
+                        <ul style="margin-top: 10px; font-size: 0.95rem; color: #666;">
+                            <li>• A/P Invoice (ใบแจ้งหนี้เจ้าหนี้)</li>
+                            <li>• Business Partner (คู่ค้า)</li>
+                            <li>• Outgoing Payment (การจ่ายเงิน)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div style="background: #fff; border-radius: 15px; padding: 25px 35px; margin-top: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.06);">
+                    <h4 style="color: var(--primary); margin-bottom: 15px; font-size: 1.2rem;">ตัวอย่างข้อมูลที่ระบบสร้างและส่งออก</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                        <div style="background: #E8F5E9; padding: 18px; border-radius: 10px; border-left: 4px solid #27AE60;">
+                            <strong style="color: #27AE60;">Inbound (นำเข้า SAP)</strong>
+                            <p style="margin-top: 8px; font-size: 0.9rem; color: #555;">
+                                เมื่อมีใบแจ้งหนี้จากผู้รับเหมาใน PDMS → ระบบจะสร้าง<br>
+                                <code style="background: #fff; padding: 2px 6px; border-radius: 4px;">A/P Invoice</code> พร้อมข้อมูลโครงการและผู้รับเหมาใน SAP โดยอัตโนมัติ
+                            </p>
+                        </div>
+                        <div style="background: #E3F2FD; padding: 18px; border-radius: 10px; border-left: 4px solid #3498DB;">
+                            <strong style="color: #3498DB;">Outbound (ส่งกลับ PDMS)</strong>
+                            <p style="margin-top: 8px; font-size: 0.9rem; color: #555;">
+                                เมื่อโอนเงินให้ผู้รับเหมาใน SAP แล้ว → กดปุ่ม Add-on<br>
+                                ส่งสถานะ <code style="background: #fff; padding: 2px 6px; border-radius: 4px;">"โอนแล้ว"</code> + เลขที่ Payment กลับไป PDMS
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Workflow Overview -->
+        <div class="slide" data-slide="10">
+            <div class="slide-header">
+                <h2>ภาพรวมการดำเนินงานของระบบ</h2>
+            </div>
+            <div class="workflow-section">
+                <!-- Inbound Flow -->
+                <div class="workflow-row inbound">
+                    <div class="wf-system pdms">PDMS<small>ระบบจัดการโครงการ</small></div>
+                    <div class="wf-arrow">➜<small>ส่งข้อมูล</small></div>
+                    <div class="wf-system middleware">Middleware<small>ระบบตัวกลาง</small></div>
+                    <div class="wf-arrow">➜<small>สร้างเอกสาร</small></div>
+                    <div class="wf-system sap">SAP B1<small>ระบบบัญชี</small></div>
+                    <div class="wf-result">
+                        <h5>สร้างใน SAP</h5>
+                        <ul>
+                            <li>A/P Invoice</li>
+                            <li>Business Partner</li>
+                            <li>Project</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Outbound Flow -->
+                <div class="workflow-row outbound">
+                    <div class="wf-system sap">SAP B1<small>Outgoing Payment</small></div>
+                    <div class="wf-arrow">➜<small>กดปุ่ม Add-on</small></div>
+                    <div class="wf-system middleware">Middleware<small>ระบบตัวกลาง</small></div>
+                    <div class="wf-arrow">➜<small>อัปเดตสถานะ</small></div>
+                    <div class="wf-system pdms">PDMS<small>ระบบจัดการโครงการ</small></div>
+                    <div class="wf-result">
+                        <h5>ส่งกลับ PDMS</h5>
+                        <ul>
+                            <li>สถานะ "โอนแล้ว"</li>
+                            <li>เลขที่ Payment</li>
+                            <li>วันที่โอนเงิน</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Summary -->
+                <div class="workflow-summary">
+                    <div class="wf-summary-box">
+                        <h4>ทำไมต้องสร้างระบบนี้?</h4>
+                        <ul>
+                            <li>ลดการกรอกข้อมูลซ้ำซ้อนระหว่าง 2 ระบบ</li>
+                            <li>ลดข้อผิดพลาดจากการพิมพ์ด้วยมือ</li>
+                            <li>ประหยัดเวลาและค่าใช้จ่ายบุคลากร</li>
+                            <li>ข้อมูลทั้ง 2 ระบบตรงกันเสมอ</li>
+                        </ul>
+                    </div>
+                    <div class="wf-summary-box">
+                        <h4>ความสำคัญต่อบริษัท</h4>
+                        <ul>
+                            <li>เพิ่มประสิทธิภาพการทำงาน 95%</li>
+                            <li>ลด Human Error เป็นศูนย์</li>
+                            <li>ติดตามสถานะการเงินแบบ Real-time</li>
+                            <li>มี Log ตรวจสอบย้อนหลังได้ทุกรายการ</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: Tools -->
+        <div class="slide" data-slide="11">
+            <div class="slide-header">
+                <h2>เครื่องมือและเทคโนโลยี</h2>
+            </div>
+            <div class="grid-section">
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="icon">C#</div>
+                        <h4>C# .NET Framework</h4>
+                        <p>ภาษาโปรแกรมหลัก</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="icon">VS</div>
+                        <h4>Visual Studio</h4>
+                        <p>IDE สำหรับพัฒนา</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="icon">SAP</div>
+                        <h4>SAP Service Layer</h4>
+                        <p>API เชื่อมต่อ SAP B1</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="icon">DB</div>
+                        <h4>SAP HANA</h4>
+                        <p>In-Memory Database</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="icon">API</div>
+                        <h4>PDMS REST API</h4>
+                        <p>API ระบบภายนอก</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="icon">🔒</div>
+                        <h4>DPAPI / TLS 1.2</h4>
+                        <p>Security Layer</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="icon">⚙️</div>
+                        <h4>Windows Service</h4>
+                        <p>Background Process</p>
+                    </div>
+                    <div class="tool-card">
+                        <div class="icon">Git</div>
+                        <h4>Git</h4>
+                        <p>Version Control</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: DFD Context -->
+        <div class="slide" data-slide="12">
+            <div class="slide-header">
+                <h2>Data Flow Diagram - Context Level</h2>
+            </div>
+            <div class="diagram-section">
+                <div class="diagram-frame">
+                    <img src="Dra/PDMS_SAP_All_Diagrams-1. DFD Context Level.drawio.png" alt="DFD Context Level">
+                </div>
+                <p class="diagram-caption">รูปที่ 3.1 Data Flow Diagram Context Level แสดงภาพรวมการไหลของข้อมูลในระบบ</p>
+            </div>
+        </div>
+
+        <!-- SLIDE 13: Benefits -->
+        <div class="slide" data-slide="13">
+            <div class="slide-header">
+                <h2>ประโยชน์ที่คาดว่าจะได้รับ</h2>
+            </div>
+            <div class="grid-section">
+                <div class="benefits-grid">
+                    <div class="benefit-card">
+                        <div class="number">01</div>
+                        <h4>ลดระยะเวลาการทำงาน</h4>
+                        <p>ลดขั้นตอนการกรอกข้อมูลซ้ำซ้อนระหว่างระบบ จากเดิม 2-3 ชั่วโมง เหลือเพียง 5 นาที</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="number">02</div>
+                        <h4>ลด Human Error</h4>
+                        <p>ระบบโอนถ่ายข้อมูลอัตโนมัติช่วยลดข้อผิดพลาดจากการพิมพ์ผิด ใส่ตัวเลขผิด</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="number">03</div>
+                        <h4>ข้อมูลถูกต้องเป็นปัจจุบัน</h4>
+                        <p>ข้อมูลธุรกรรมการเงินถูกซิงค์อัตโนมัติ ทำให้ข้อมูลทั้งสองระบบตรงกันเสมอ</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="number">04</div>
+                        <h4>เพิ่มประสิทธิภาพการทำงาน</h4>
+                        <p>ประหยัดเวลาและทรัพยากรบุคคล พนักงานนำเวลาไปทำงานอื่นที่สำคัญกว่า</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="number">05</div>
+                        <h4>ติดตามสถานะ Real-time</h4>
+                        <p>ตรวจสอบสถานะการเบิกจ่ายได้ทันทีผ่านหน้าจอ SAP Business One</p>
+                    </div>
+                    <div class="benefit-card">
+                        <div class="number">06</div>
+                        <h4>มี Log ตรวจสอบ</h4>
+                        <p>บันทึกประวัติการทำงานทุกรายการใน UDT สามารถตรวจสอบย้อนหลังได้</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: Results -->
+        <div class="slide" data-slide="14">
+            <div class="slide-header">
+                <h2>ผลการดำเนินงาน</h2>
+            </div>
+            <div class="results-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="value">95%</div>
+                        <div class="label">ลดเวลาการทำงาน</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #27AE60, #2ECC71);">
+                        <div class="value">100%</div>
+                        <div class="label">ลดข้อผิดพลาด</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #2980B9, #3498DB);">
+                        <div class="value">Real-time</div>
+                        <div class="label">การซิงค์ข้อมูล</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #8E44AD, #9B59B6);">
+                        <div class="value">24/7</div>
+                        <div class="label">ทำงานอัตโนมัติ</div>
+                    </div>
+                </div>
+                <div class="chart-area">
+                    <h3>เปรียบเทียบประสิทธิภาพ</h3>
+                    <div class="bar-chart">
+                        <div class="bar-label">
+                            <span>เวลาทำงาน (ก่อน)</span>
+                            <span>2-3 ชั่วโมง</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill danger" style="width: 90%;"></div>
+                        </div>
+                    </div>
+                    <div class="bar-chart">
+                        <div class="bar-label">
+                            <span>เวลาทำงาน (หลัง)</span>
+                            <span>5 นาที</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill success" style="width: 5%;"></div>
+                        </div>
+                    </div>
+                    <div class="bar-chart">
+                        <div class="bar-label">
+                            <span>ความถูกต้องของข้อมูล</span>
+                            <span>100%</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill primary" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 15: Timeline -->
+        <div class="slide" data-slide="15">
+            <div class="slide-header">
+                <h2>ระยะเวลาในการดำเนินงาน</h2>
+            </div>
+            <div class="timeline-section">
+                <table class="timeline-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 35%;">ขั้นตอน</th>
+                            <th style="width: 13%;">ธ.ค. 68</th>
+                            <th style="width: 13%;">ม.ค. 69</th>
+                            <th style="width: 13%;">ก.พ. 69</th>
+                            <th style="width: 26%;">สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ศึกษาข้อมูลและวิเคราะห์ความต้องการ</td>
+                            <td><div class="timeline-bar" style="width: 80%;"></div></td>
+                            <td></td>
+                            <td></td>
+                            <td><span class="status-badge done">เสร็จสิ้น</span></td>
+                        </tr>
+                        <tr>
+                            <td>วิเคราะห์และออกแบบระบบ</td>
+                            <td><div class="timeline-bar" style="width: 80%;"></div></td>
+                            <td></td>
+                            <td></td>
+                            <td><span class="status-badge done">เสร็จสิ้น</span></td>
+                        </tr>
+                        <tr>
+                            <td>พัฒนาระบบนำเข้าข้อมูลอัตโนมัติ</td>
+                            <td></td>
+                            <td><div class="timeline-bar"></div></td>
+                            <td></td>
+                            <td><span class="status-badge done">เสร็จสิ้น</span></td>
+                        </tr>
+                        <tr>
+                            <td>พัฒนา SAP B1 Add-on</td>
+                            <td></td>
+                            <td><div class="timeline-bar" style="width: 60%;"></div></td>
+                            <td><div class="timeline-bar" style="width: 60%;"></div></td>
+                            <td><span class="status-badge done">เสร็จสิ้น</span></td>
+                        </tr>
+                        <tr>
+                            <td>ทดสอบระบบและแก้ไขข้อผิดพลาด</td>
+                            <td></td>
+                            <td></td>
+                            <td><div class="timeline-bar" style="width: 80%; background: linear-gradient(90deg, #F39C12, #E67E22);"></div></td>
+                            <td><span class="status-badge waiting">รอ Test จาก Consultant</span></td>
+                        </tr>
+                        <tr>
+                            <td>นำระบบไปใช้งานจริง</td>
+                            <td></td>
+                            <td></td>
+                            <td><div class="timeline-bar" style="width: 60%; background: #DDD;"></div></td>
+                            <td><span class="status-badge pending">รอดำเนินการ</span></td>
+                        </tr>
+                        <tr>
+                            <td>สรุปผลและจัดทำรายงาน</td>
+                            <td></td>
+                            <td><div class="timeline-bar" style="width: 40%;"></div></td>
+                            <td><div class="timeline-bar" style="width: 80%;"></div></td>
+                            <td><span class="status-badge progress">กำลังดำเนินการ</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="timeline-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background: #27AE60;"></div> เสร็จสิ้น</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: #3498DB;"></div> กำลังดำเนินการ</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: #F39C12;"></div> รอ Test</div>
+                    <div class="legend-item"><div class="legend-dot" style="background: #95A5A6;"></div> รอดำเนินการ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 16: Q&A -->
+        <div class="slide slide-qa" data-slide="16">
+            <h2>Q&A</h2>
+            <p>ถาม - ตอบ ข้อสงสัย</p>
+        </div>
+
+        <!-- SLIDE 17: Thank You -->
+        <div class="slide slide-thanks" data-slide="17">
+            <div class="left">
+                <div class="circle-frame">
+                    <img src="png/IMG_5990.jpg" alt="Thank You">
+                </div>
+            </div>
+            <div class="right">
+                <h2>THANK<br>YOU</h2>
+                <div class="contact">
+                    <p><strong>นายเมฆพัฒ การจักร์</strong></p>
+                    <p>นักศึกษาฝึกงาน (Intern)</p>
+                    <p>Sala Daeng Company Limited</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">◀</button>
+        <button class="nav-btn" onclick="nextSlide()">▶</button>
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentSlide">1</span> / <span id="totalSlides">17</span>
+    </div>
+
+    <!-- Remote Control Button -->
+    <button class="remote-btn" onclick="toggleQRModal()" title="Remote Control">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12" y2="18"></line>
+        </svg>
+    </button>
+
+    <!-- QR Modal -->
+    <div id="qrModal" class="qr-modal">
+        <div class="qr-modal-content">
+            <button class="qr-close" onclick="toggleQRModal()">&times;</button>
+            <h3>Remote Control</h3>
+            <p>สแกน QR Code ด้วยมือถือเพื่อควบคุม Presentation</p>
+            <div id="qrcode"></div>
+            <div class="qr-status" id="connectionStatus">
+                <span class="status-dot"></span>
+                <span id="statusText">รอการเชื่อมต่อ...</span>
+            </div>
+            <p class="qr-url" id="remoteUrl"></p>
+            <p class="qr-hint">หรือเปิด URL ด้านบนในมือถือ</p>
+        </div>
+    </div>
+
+    <!-- Remote Control Styles -->
+    <style>
+        .remote-btn {
+            position: fixed;
+            bottom: 35px;
+            left: 40px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(139, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .remote-btn:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+        .remote-btn.connected {
+            background: #27AE60;
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 5px 20px rgba(39, 174, 96, 0.3); }
+            50% { box-shadow: 0 5px 30px rgba(39, 174, 96, 0.6); }
+        }
+        .qr-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .qr-modal.show { display: flex; }
+        .qr-modal-content {
+            background: #fff;
+            padding: 40px 50px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            animation: scaleIn 0.3s ease;
+        }
+        .qr-modal-content h3 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        .qr-modal-content p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #qrcode {
+            display: inline-block;
+            padding: 15px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        #qrcode canvas {
+            display: block;
+        }
+        .qr-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+        }
+        .qr-close:hover { color: var(--primary); }
+        .qr-modal-content { position: relative; }
+        .qr-status {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border-radius: 25px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #F39C12;
+            animation: blink 1.5s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        .qr-status.connected .status-dot {
+            background: #27AE60;
+            animation: none;
+        }
+        .qr-url {
+            font-size: 0.85rem;
+            color: #999;
+            word-break: break-all;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+        .qr-hint {
+            font-size: 0.8rem;
+            color: #bbb;
+            margin-top: 10px !important;
+            margin-bottom: 0 !important;
+        }
+    </style>
+
+    <!-- PeerJS and QRCode Libraries -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            const slides = document.querySelectorAll('.slide');
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide - 1].classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlide;
+            // Send update to connected remotes
+            broadcastSlideUpdate();
+        }
+
+        function nextSlide() { currentSlide++; showSlide(currentSlide); }
+        function prevSlide() { currentSlide--; showSlide(currentSlide); }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') nextSlide();
+            else if (e.key === 'ArrowLeft') prevSlide();
+            else if (e.key === 'Home') { currentSlide = 1; showSlide(currentSlide); }
+            else if (e.key === 'End') { currentSlide = totalSlides; showSlide(currentSlide); }
+            else if (e.key === 'r' || e.key === 'R') toggleQRModal();
+        });
+
+        document.querySelector('.slide-container').addEventListener('click', (e) => {
+            if (!e.target.closest('.nav-controls') && !e.target.closest('.nav-btn') && !e.target.closest('.remote-btn') && !e.target.closest('.qr-modal')) {
+                const rect = document.querySelector('.slide-container').getBoundingClientRect();
+                if (e.clientX - rect.left > rect.width / 2) nextSlide();
+                else prevSlide();
+            }
+        });
+
+        // ============ Remote Control System ============
+        let peer = null;
+        let connections = [];
+        let peerId = null;
+
+        // Generate unique room ID
+        function generateRoomId() {
+            return 'pres-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        }
+
+        // Initialize PeerJS
+        function initPeer() {
+            peerId = generateRoomId();
+            peer = new Peer(peerId);
+
+            peer.on('open', (id) => {
+                console.log('Presenter ID:', id);
+                generateQRCode();
+            });
+
+            peer.on('connection', (conn) => {
+                console.log('Remote connected:', conn.peer);
+                connections.push(conn);
+                updateConnectionStatus(true);
+
+                conn.on('data', (data) => {
+                    if (data.action === 'next') nextSlide();
+                    else if (data.action === 'prev') prevSlide();
+                    else if (data.action === 'goto') {
+                        currentSlide = data.slide;
+                        showSlide(currentSlide);
+                    }
+                });
+
+                conn.on('close', () => {
+                    connections = connections.filter(c => c !== conn);
+                    if (connections.length === 0) updateConnectionStatus(false);
+                });
+
+                // Send current state
+                conn.on('open', () => {
+                    conn.send({ type: 'init', slide: currentSlide, total: totalSlides });
+                });
+            });
+
+            peer.on('error', (err) => {
+                console.error('Peer error:', err);
+                // Try to reconnect
+                setTimeout(initPeer, 2000);
+            });
+        }
+
+        // Generate QR Code
+        function generateQRCode() {
+            const baseUrl = window.location.href.split('?')[0].replace('presentation_formal.html', '');
+            const remoteUrl = baseUrl + 'remote.html?room=' + peerId;
+
+            document.getElementById('remoteUrl').textContent = remoteUrl;
+
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+
+            QRCode.toCanvas(document.createElement('canvas'), remoteUrl, {
+                width: 200,
+                margin: 2,
+                color: { dark: '#8B0000', light: '#FFFFFF' }
+            }, (err, canvas) => {
+                if (!err) qrContainer.appendChild(canvas);
+            });
+        }
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const status = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('statusText');
+            const remoteBtn = document.querySelector('.remote-btn');
+
+            if (connected) {
+                status.classList.add('connected');
+                statusText.textContent = 'เชื่อมต่อแล้ว (' + connections.length + ' เครื่อง)';
+                remoteBtn.classList.add('connected');
+            } else {
+                status.classList.remove('connected');
+                statusText.textContent = 'รอการเชื่อมต่อ...';
+                remoteBtn.classList.remove('connected');
+            }
+        }
+
+        // Broadcast slide update to all remotes
+        function broadcastSlideUpdate() {
+            connections.forEach(conn => {
+                if (conn.open) {
+                    conn.send({ type: 'update', slide: currentSlide, total: totalSlides });
+                }
+            });
+        }
+
+        // Toggle QR Modal
+        function toggleQRModal() {
+            const modal = document.getElementById('qrModal');
+            modal.classList.toggle('show');
+
+            if (modal.classList.contains('show') && !peer) {
+                initPeer();
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('qrModal').addEventListener('click', (e) => {
+            if (e.target.id === 'qrModal') toggleQRModal();
+        });
+
+        // Close modal on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('qrModal').classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
